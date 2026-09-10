@@ -1,0 +1,1546 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zensus — C Variables & Data Types — Visual Flowcharts & Graphs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg-main: #090d16;
+  --bg-surface: #111927;
+  --bg-surface-hover: #172238;
+  --bg-card: rgba(17, 25, 39, 0.75);
+  --border-color: rgba(255, 255, 255, 0.08);
+  --border-focus: #38bdf8;
+  --text-main: #f1f5f9;
+  --text-muted: #94a3b8;
+  --text-dim: #64748b;
+  --accent-cyan: #38bdf8;
+  --accent-purple: #818cf8;
+  --accent-emerald: #34d399;
+  --accent-amber: #fbbf24;
+  --accent-rose: #f43f5e;
+  --grad-primary: linear-gradient(135deg, #38bdf8, #818cf8);
+  --grad-accent: linear-gradient(135deg, #818cf8, #c084fc);
+  --code-bg: #060911;
+  --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.25);
+  --shadow-lg: 0 20px 40px rgba(0, 0, 0, 0.4);
+  --glass-bg: rgba(17, 25, 39, 0.65);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-full: 9999px;
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-mono: 'Fira Code', ui-monospace, monospace;
+}
+
+[data-theme="light"] {
+  --bg-main: #f8fafc;
+  --bg-surface: #ffffff;
+  --bg-surface-hover: #f1f5f9;
+  --bg-card: rgba(255, 255, 255, 0.85);
+  --border-color: rgba(148, 163, 184, 0.2);
+  --border-focus: #0284c7;
+  --text-main: #0f172a;
+  --text-muted: #475569;
+  --text-dim: #64748b;
+  --accent-cyan: #0284c7;
+  --accent-purple: #6366f1;
+  --accent-emerald: #059669;
+  --accent-amber: #d97706;
+  --accent-rose: #e11d48;
+  --grad-primary: linear-gradient(135deg, #0284c7, #6366f1);
+  --grad-accent: linear-gradient(135deg, #6366f1, #9333ea);
+  --code-bg: #0f172a;
+  --shadow-sm: 0 4px 12px rgba(15, 23, 42, 0.05);
+  --shadow-lg: 0 20px 40px rgba(15, 23, 42, 0.1);
+  --glass-bg: rgba(255, 255, 255, 0.8);
+  --glass-border: rgba(148, 163, 184, 0.25);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; font-size: 16px; }
+body {
+  font-family: var(--font-sans);
+  background-color: var(--bg-main);
+  color: var(--text-main);
+  line-height: 1.6;
+  overflow-x: hidden;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Background Mesh Gradients */
+.bg-glow {
+  position: fixed;
+  top: 0; left: 0; width: 100vw; height: 100vh;
+  pointer-events: none;
+  z-index: -1;
+  overflow: hidden;
+}
+.glow-1 {
+  position: absolute; top: -10%; left: 10%; width: 50vw; height: 50vw;
+  background: radial-gradient(circle, rgba(56, 189, 248, 0.07), transparent 70%);
+}
+.glow-2 {
+  position: absolute; top: 30%; right: -10%; width: 45vw; height: 45vw;
+  background: radial-gradient(circle, rgba(129, 140, 248, 0.08), transparent 70%);
+}
+
+/* Reading Progress Bar */
+#progress-bar {
+  position: fixed; top: 0; left: 0; height: 3px;
+  background: var(--grad-primary);
+  width: 0%; z-index: 1000;
+  transition: width 0.1s ease-out;
+}
+
+/* Navbar */
+.navbar {
+  position: sticky; top: 0; z-index: 100;
+  background: var(--glass-bg);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border-color);
+  transition: background 0.3s ease;
+}
+.nav-container {
+  max-width: 1240px; margin: 0 auto; padding: 14px 24px;
+  display: flex; align-items: center; justify-content: space-between; gap: 20px;
+}
+.brand {
+  display: flex; align-items: center; gap: 12px;
+  text-decoration: none; color: var(--text-main); font-weight: 800; font-size: 1.25rem;
+}
+.brand-icon {
+  width: 38px; height: 38px; border-radius: 10px;
+  background: var(--grad-primary);
+  display: grid; place-items: center;
+  color: #fff; font-weight: 900; font-size: 1.2rem;
+  box-shadow: 0 4px 14px rgba(56, 189, 248, 0.3);
+}
+.nav-links {
+  display: flex; align-items: center; gap: 20px; list-style: none;
+}
+.nav-links a {
+  text-decoration: none; color: var(--text-muted); font-size: 0.92rem; font-weight: 600;
+  transition: color 0.2s ease;
+}
+.nav-links a:hover, .nav-links a.active { color: var(--accent-cyan); }
+.nav-actions { display: flex; align-items: center; gap: 12px; }
+
+.btn-icon {
+  background: var(--bg-surface); border: 1px solid var(--border-color);
+  color: var(--text-main); width: 40px; height: 40px; border-radius: var(--radius-md);
+  display: grid; place-items: center; cursor: pointer; transition: all 0.2s ease;
+}
+.btn-icon:hover { background: var(--bg-surface-hover); border-color: var(--accent-cyan); }
+
+.btn-search {
+  background: var(--bg-surface); border: 1px solid var(--border-color);
+  color: var(--text-muted); padding: 8px 14px; border-radius: var(--radius-md);
+  display: flex; align-items: center; gap: 8px; font-size: 0.88rem; font-weight: 500;
+  cursor: pointer; transition: all 0.2s ease;
+}
+.btn-search:hover { border-color: var(--accent-cyan); color: var(--text-main); }
+.kbd-shortcut {
+  background: var(--border-color); padding: 2px 6px; border-radius: 4px;
+  font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-muted);
+}
+
+/* Layout Utilities */
+.container { max-width: 1240px; margin: 0 auto; padding: 0 24px; }
+section { padding: 80px 0; border-bottom: 1px solid var(--border-color); }
+.section-header { margin-bottom: 40px; text-align: left; }
+.eyebrow {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 6px 14px; border-radius: var(--radius-full);
+  background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.25);
+  color: var(--accent-cyan); font-size: 0.78rem; font-weight: 800;
+  letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 14px;
+}
+.section-title { font-size: 2.2rem; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 10px; }
+.section-desc { color: var(--text-muted); font-size: 1.05rem; max-width: 720px; line-height: 1.7; }
+
+/* Hero Section */
+.hero { padding: 90px 0 70px; }
+.hero-grid { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 50px; align-items: center; }
+.hero-title {
+  font-size: clamp(2.8rem, 5vw, 4.2rem); font-weight: 900; line-height: 1.1;
+  letter-spacing: -0.04em; margin-bottom: 20px;
+}
+.grad-text {
+  background: var(--grad-primary); -webkit-background-clip: text;
+  background-clip: text; color: transparent;
+}
+.hero-lead { font-size: 1.18rem; color: var(--text-muted); line-height: 1.75; margin-bottom: 32px; }
+.hero-buttons { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 40px; }
+
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 13px 24px; border-radius: var(--radius-md); font-weight: 700; font-size: 0.95rem;
+  text-decoration: none; cursor: pointer; transition: all 0.25s ease; border: 1px solid transparent;
+}
+.btn-primary {
+  background: var(--grad-primary); color: #fff;
+  box-shadow: 0 8px 24px rgba(56, 189, 248, 0.3);
+}
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(56, 189, 248, 0.4); }
+.btn-secondary {
+  background: var(--bg-surface); border-color: var(--border-color); color: var(--text-main);
+}
+.btn-secondary:hover { background: var(--bg-surface-hover); border-color: var(--accent-cyan); transform: translateY(-2px); }
+
+/* Hero Stats Bar */
+.hero-stats {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
+  background: var(--glass-bg); backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-border); padding: 20px; border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+}
+.stat-item { text-align: center; }
+.stat-num { font-size: 1.8rem; font-weight: 800; color: var(--accent-cyan); display: block; }
+.stat-label { font-size: 0.8rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+
+/* Code Visual Preview Card */
+.code-preview-card {
+  background: var(--code-bg); border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-lg);
+}
+.code-preview-header {
+  background: rgba(255, 255, 255, 0.03); padding: 12px 18px; border-bottom: 1px solid var(--border-color);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.window-dots { display: flex; gap: 8px; }
+.dot { width: 12px; height: 12px; border-radius: 50%; }
+.dot-red { background: #ff5f56; }
+.dot-yellow { background: #ffbd2e; }
+.dot-green { background: #27c93f; }
+.code-preview-title { font-family: var(--font-mono); font-size: 0.82rem; color: var(--text-dim); }
+.code-body { padding: 22px; font-family: var(--font-mono); font-size: 0.92rem; line-height: 1.8; color: #e2e8f0; overflow-x: auto; }
+
+/* Cards & Grid Systems */
+.grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+.grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+
+.card {
+  background: var(--bg-card); backdrop-filter: blur(12px);
+  border: 1px solid var(--border-color); border-radius: var(--radius-lg);
+  padding: 28px; transition: all 0.3s ease; position: relative; overflow: hidden;
+}
+.card:hover { border-color: rgba(56, 189, 248, 0.4); transform: translateY(-4px); box-shadow: var(--shadow-lg); }
+
+.card-badge {
+  display: inline-block; padding: 4px 10px; border-radius: var(--radius-sm);
+  background: rgba(129, 140, 248, 0.12); color: var(--accent-purple);
+  font-size: 0.75rem; font-weight: 700; text-transform: uppercase; margin-bottom: 14px;
+}
+.card h3 { font-size: 1.3rem; font-weight: 700; margin-bottom: 10px; }
+.card p { color: var(--text-muted); font-size: 0.95rem; line-height: 1.6; }
+
+/* Syntax Tokens */
+.kw { color: #38bdf8; font-weight: 600; }
+.type-kw { color: #c084fc; font-weight: 600; }
+.str { color: #34d399; }
+.num { color: #fbbf24; }
+.cm { color: #64748b; font-style: italic; }
+.fn { color: #818cf8; }
+
+/* Graph & Chart Styling */
+.chart-container {
+  background: var(--bg-surface); border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg); padding: 32px; box-shadow: var(--shadow-lg); margin-top: 24px;
+}
+.chart-title { font-size: 1.2rem; font-weight: 800; margin-bottom: 6px; display: flex; align-items: center; gap: 8px; }
+.chart-subtitle { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 24px; }
+
+/* Bar Chart Component */
+.bar-chart { display: flex; flex-direction: column; gap: 16px; margin-top: 20px; }
+.bar-row { display: grid; grid-template-columns: 110px 1fr 140px; align-items: center; gap: 16px; }
+.bar-label { font-family: var(--font-mono); font-weight: 700; font-size: 0.95rem; }
+.bar-track { height: 26px; background: rgba(255, 255, 255, 0.05); border-radius: var(--radius-sm); border: 1px solid var(--border-color); overflow: hidden; position: relative; }
+.bar-fill {
+  height: 100%; border-radius: var(--radius-sm); background: var(--grad-primary);
+  width: 0%; transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex; align-items: center; justify-content: flex-end; padding-right: 10px;
+  font-family: var(--font-mono); font-size: 0.75rem; font-weight: 800; color: #fff;
+}
+.bar-meta { font-family: var(--font-mono); font-size: 0.82rem; color: var(--text-muted); text-align: right; }
+
+/* SVG Flowchart Diagrams */
+.svg-flowchart { width: 100%; height: auto; overflow: visible; }
+.svg-node {
+  fill: var(--bg-surface); stroke: var(--border-color); stroke-width: 2; rx: 12;
+  transition: all 0.3s ease; cursor: pointer;
+}
+.svg-node:hover { stroke: var(--accent-cyan); fill: var(--bg-surface-hover); }
+.svg-node.accent { fill: rgba(56, 189, 248, 0.1); stroke: var(--accent-cyan); }
+.svg-text-title { font-family: var(--font-sans); font-size: 15px; font-weight: 800; fill: var(--text-main); text-anchor: middle; }
+.svg-text-sub { font-family: var(--font-mono); font-size: 12px; fill: var(--accent-cyan); text-anchor: middle; }
+.svg-line { stroke: var(--text-dim); stroke-width: 2.5; stroke-dasharray: 4; }
+
+/* IEEE 754 Visualizer Chart */
+.ieee-bitgrid { display: flex; gap: 4px; overflow-x: auto; padding: 14px 0; }
+.bit-cell {
+  flex: 1; min-width: 22px; height: 42px; border-radius: 6px; border: 1px solid var(--border-color);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  font-family: var(--font-mono); font-size: 0.8rem; font-weight: 700; transition: transform 0.2s;
+}
+.bit-cell:hover { transform: translateY(-3px); }
+.bit-sign { background: rgba(244, 63, 94, 0.2); border-color: var(--accent-rose); color: var(--accent-rose); }
+.bit-exp { background: rgba(251, 191, 36, 0.2); border-color: var(--accent-amber); color: var(--accent-amber); }
+.bit-mant { background: rgba(56, 189, 248, 0.2); border-color: var(--accent-cyan); color: var(--accent-cyan); }
+
+/* Visual Memory Inspector */
+.simulator-panel {
+  background: var(--bg-surface); border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg); padding: 32px; box-shadow: var(--shadow-lg);
+}
+.sim-controls {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-bottom: 30px;
+  background: var(--bg-main); padding: 20px; border-radius: var(--radius-md); border: 1px solid var(--border-color);
+}
+.form-group { display: flex; flex-direction: column; gap: 6px; }
+.form-group label { font-size: 0.82rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; }
+.form-control {
+  background: var(--bg-surface); border: 1px solid var(--border-color);
+  color: var(--text-main); padding: 10px 14px; border-radius: var(--radius-sm);
+  font-family: var(--font-sans); font-size: 0.95rem; outline: none; transition: border-color 0.2s;
+}
+.form-control:focus { border-color: var(--accent-cyan); }
+
+/* Memory Grid Visualizer */
+.memory-header-info {
+  display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; flex-wrap: wrap; gap: 10px;
+}
+.address-tag { font-family: var(--font-mono); font-size: 0.85rem; color: var(--accent-cyan); }
+.byte-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 14px;
+}
+.byte-card {
+  background: var(--code-bg); border: 1px solid var(--border-color);
+  border-radius: var(--radius-md); padding: 16px; text-align: center;
+  transition: all 0.2s ease; position: relative;
+}
+.byte-card.active-byte { border-color: var(--accent-cyan); background: rgba(56, 189, 248, 0.05); }
+.byte-addr { font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-dim); margin-bottom: 6px; }
+.byte-hex { font-family: var(--font-mono); font-size: 1.4rem; font-weight: 800; color: var(--accent-amber); margin-bottom: 4px; }
+.byte-bin { font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-muted); letter-spacing: 1px; }
+.byte-label { font-size: 0.7rem; color: var(--accent-purple); font-weight: 700; margin-top: 6px; text-transform: uppercase; }
+
+/* Declaration Builder */
+.builder-box {
+  background: var(--code-bg); border: 1px solid var(--border-color);
+  padding: 24px; border-radius: var(--radius-md); margin-top: 20px;
+  font-family: var(--font-mono); font-size: 1.2rem; display: flex; align-items: center; flex-wrap: wrap; gap: 10px;
+}
+.status-pill {
+  display: inline-flex; align-items: center; gap: 8px; padding: 8px 16px;
+  border-radius: var(--radius-full); font-size: 0.85rem; font-weight: 700; margin-top: 18px;
+}
+.status-pill.valid { background: rgba(52, 211, 153, 0.15); color: var(--accent-emerald); border: 1px solid rgba(52, 211, 153, 0.3); }
+.status-pill.invalid { background: rgba(244, 63, 94, 0.15); color: var(--accent-rose); border: 1px solid rgba(244, 63, 94, 0.3); }
+
+/* Conversion Sandbox */
+.cast-flow {
+  display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;
+  margin-top: 24px; padding: 24px; background: var(--bg-main); border-radius: var(--radius-md); border: 1px solid var(--border-color);
+}
+.cast-box {
+  flex: 1; min-width: 200px; background: var(--bg-surface); padding: 20px; border-radius: var(--radius-md);
+  border: 1px solid var(--border-color); text-align: center;
+}
+.cast-arrow { font-size: 1.5rem; color: var(--accent-cyan); font-weight: 900; }
+
+/* Specifier Matrix Table */
+.table-wrapper {
+  overflow-x: auto; border: 1px solid var(--border-color); border-radius: var(--radius-lg);
+  background: var(--bg-card); backdrop-filter: blur(12px);
+}
+table { width: 100%; border-collapse: collapse; text-align: left; }
+th, td { padding: 16px 20px; border-bottom: 1px solid var(--border-color); }
+th { font-size: 0.82rem; font-weight: 800; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.05em; background: rgba(0, 0, 0, 0.15); }
+td { font-size: 0.95rem; color: var(--text-main); }
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: rgba(255, 255, 255, 0.02); }
+code { font-family: var(--font-mono); font-size: 0.88rem; background: rgba(255, 255, 255, 0.06); padding: 2px 6px; border-radius: 4px; color: var(--accent-cyan); }
+
+/* Flashcards */
+.flashcard { perspective: 1000px; height: 220px; cursor: pointer; }
+.flashcard-inner {
+  position: relative; width: 100%; height: 100%; text-align: center;
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-style: preserve-3d; border-radius: var(--radius-lg);
+}
+.flashcard.flipped .flashcard-inner { transform: rotateY(180deg); }
+.flashcard-front, .flashcard-back {
+  position: absolute; width: 100%; height: 100%; backface-visibility: hidden;
+  border-radius: var(--radius-lg); padding: 28px; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; border: 1px solid var(--border-color);
+  background: var(--bg-card); backdrop-filter: blur(12px);
+}
+.flashcard-back { transform: rotateY(180deg); background: var(--bg-surface-hover); border-color: var(--accent-cyan); }
+
+/* Quiz */
+.quiz-card {
+  background: var(--bg-surface); border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg); padding: 32px; box-shadow: var(--shadow-lg);
+}
+.quiz-option {
+  background: var(--bg-main); border: 1px solid var(--border-color);
+  padding: 16px 20px; border-radius: var(--radius-md); margin-top: 12px;
+  cursor: pointer; transition: all 0.2s ease; display: flex; align-items: center; justify-content: space-between; font-weight: 500;
+}
+.quiz-option:hover { border-color: var(--accent-cyan); background: var(--bg-surface-hover); }
+.quiz-option.correct { background: rgba(52, 211, 153, 0.15); border-color: var(--accent-emerald); color: var(--accent-emerald); }
+.quiz-option.incorrect { background: rgba(244, 63, 94, 0.15); border-color: var(--accent-rose); color: var(--accent-rose); }
+.quiz-feedback { margin-top: 20px; padding: 16px; border-radius: var(--radius-md); display: none; font-size: 0.95rem; line-height: 1.6; }
+
+/* Toast */
+.toast {
+  position: fixed; bottom: 30px; right: 30px; background: var(--accent-cyan); color: #000;
+  padding: 12px 22px; border-radius: var(--radius-md); font-weight: 700; font-size: 0.9rem;
+  box-shadow: var(--shadow-lg); display: flex; align-items: center; gap: 8px;
+  transform: translateY(100px); opacity: 0; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); z-index: 1000;
+}
+.toast.show { transform: translateY(0); opacity: 1; }
+
+/* Modal */
+.modal-overlay {
+  position: fixed; inset: 0; background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(8px);
+  z-index: 2000; display: flex; align-items: flex-start; justify-content: center; padding-top: 100px;
+  opacity: 0; pointer-events: none; transition: opacity 0.25s ease;
+}
+.modal-overlay.active { opacity: 1; pointer-events: auto; }
+.modal-content {
+  background: var(--bg-surface); border: 1px solid var(--border-color);
+  width: 90%; max-width: 650px; border-radius: var(--radius-lg); box-shadow: var(--shadow-lg);
+  overflow: hidden; transform: translateY(-20px); transition: transform 0.25s ease;
+}
+.modal-overlay.active .modal-content { transform: translateY(0); }
+.search-input-wrapper {
+  padding: 18px 24px; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; gap: 14px;
+}
+.search-input-wrapper input {
+  width: 100%; background: transparent; border: none; outline: none;
+  color: var(--text-main); font-size: 1.1rem; font-family: var(--font-sans);
+}
+.search-results { max-height: 380px; overflow-y: auto; padding: 12px; }
+.search-item {
+  padding: 14px 18px; border-radius: var(--radius-md); text-decoration: none; display: block;
+  transition: background 0.2s;
+}
+.search-item:hover { background: var(--bg-surface-hover); }
+.search-item h4 { color: var(--accent-cyan); font-size: 1rem; margin-bottom: 4px; }
+.search-item p { color: var(--text-muted); font-size: 0.85rem; }
+
+@media (max-width: 992px) {
+  .hero-grid { grid-template-columns: 1fr; gap: 40px; text-align: center; }
+  .hero-buttons { justify-content: center; }
+  .section-header { text-align: center; }
+  .section-desc { margin: 0 auto; }
+  .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+  .nav-links { display: none; }
+}
+</style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+<div class="bg-glow"><div class="glow-1"></div><div class="glow-2"></div></div>
+<div id="toast" class="toast">📋 Copied code to clipboard!</div>
+
+<!-- Navbar -->
+<nav class="navbar">
+  <div class="nav-container">
+    <a href="#" class="brand">
+      <div class="brand-icon">Z</div>
+      <span>Zensus C</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#variables">Variables</a></li>
+      <li><a href="#types">Data Types</a></li>
+      <li><a href="#diagrams">Flowcharts & Graphs</a></li>
+      <li><a href="#memory-sandbox">Memory Sandbox</a></li>
+      <li><a href="#builder">Builder</a></li>
+      <li><a href="#casting">Type Cast</a></li>
+      <li><a href="#matrix">Specifiers</a></li>
+      <li><a href="#quiz">Practice</a></li>
+    </ul>
+    <div class="nav-actions">
+      <button class="btn-search" onclick="openSearchModal()">
+        <span>Search</span>
+        <span class="kbd-shortcut">Ctrl K</span>
+      </button>
+      <button class="btn-icon" id="theme-toggle" title="Toggle Theme" onclick="toggleTheme()">
+        🌙
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- Hero Section -->
+<header class="hero">
+  <div class="container hero-grid">
+    <div>
+      <span class="eyebrow">⚡ Zensus • C Programming Masterclass</span>
+      <h1 class="hero-title">Master C <span class="grad-text">Variables & Data Types</span></h1>
+      <p class="hero-lead">
+        Explore visual flowcharts, interactive memory graphs, byte inspectors, and type promotion hierarchy with zero-fluff explanations.
+      </p>
+      <div class="hero-buttons">
+        <a href="#diagrams" class="btn btn-primary">📊 Explore Visual Graphs</a>
+        <a href="#memory-sandbox" class="btn btn-secondary">🚀 Launch Memory Sandbox</a>
+      </div>
+      <div class="hero-stats">
+        <div class="stat-item">
+          <span class="stat-num">4</span>
+          <span class="stat-label">Core Types</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-num">5+</span>
+          <span class="stat-label">Flowcharts & Graphs</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-num">Interactive</span>
+          <span class="stat-label">Hex Inspector</span>
+        </div>
+      </div>
+    </div>
+    
+    <div class="code-preview-card">
+      <div class="code-preview-header">
+        <div class="window-dots">
+          <div class="dot dot-red"></div>
+          <div class="dot dot-yellow"></div>
+          <div class="dot dot-green"></div>
+        </div>
+        <span class="code-preview-title">main.c — C Memory Allocation</span>
+      </div>
+      <div class="code-body">
+<span class="cm">// Variable Declaration & Memory</span>
+<span class="type-kw">int</span> <span class="kw">age</span> = <span class="num">21</span>;        <span class="cm">// 4 Bytes</span>
+<span class="type-kw">double</span> <span class="kw">salary</span> = <span class="num">4500.50</span>; <span class="cm">// 8 Bytes</span>
+<span class="type-kw">char</span> <span class="kw">grade</span> = <span class="str">'A'</span>;       <span class="cm">// 1 Byte</span>
+
+<span class="cm">// Print with Specifiers</span>
+<span class="fn">printf</span>(<span class="str">"Age: %d, Grade: %c\n"</span>, age, grade);
+<span class="fn">printf</span>(<span class="str">"Memory Size: %zu bytes\n"</span>, <span class="kw">sizeof</span>(salary));
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- Section 1: Variables Concept -->
+<section id="variables">
+  <div class="container">
+    <div class="section-header">
+      <span class="eyebrow">01 • Core Concept</span>
+      <h2 class="section-title">What is a C Variable?</h2>
+      <p class="section-desc">
+        A variable is a named RAM storage location that holds a value while your C program executes. Every variable requires an explicit type, a unique identifier name, and an allocated memory address.
+      </p>
+    </div>
+
+    <div class="grid-3">
+      <div class="card">
+        <span class="card-badge">Step 1</span>
+        <h3>01. Declaration</h3>
+        <p>Tells the compiler to reserve memory space for a specific data type without assigning an initial value.</p>
+        <div style="margin-top:14px;"><code>int studentAge;</code></div>
+      </div>
+
+      <div class="card">
+        <span class="card-badge">Step 2</span>
+        <h3>02. Initialization</h3>
+        <p>Assigns the very first value to a declared variable during or after its creation statement.</p>
+        <div style="margin-top:14px;"><code>studentAge = 20;</code></div>
+      </div>
+
+      <div class="card">
+        <span class="card-badge">Step 3</span>
+        <h3>03. Assignment</h3>
+        <p>Updates an existing variable with a new value during program execution.</p>
+        <div style="margin-top:14px;"><code>studentAge = 21;</code></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Section 2: Data Types Deep Dive -->
+<section id="types">
+  <div class="container">
+    <div class="section-header">
+      <span class="eyebrow">02 • Fundamental Types</span>
+      <h2 class="section-title">C Primitive Data Types</h2>
+      <p class="section-desc">
+        C is a strongly-typed language. Choose the data type that matches the range, representation, and memory precision needed for your data.
+      </p>
+    </div>
+
+    <div class="grid-4">
+      <div class="card">
+        <span class="card-badge">Whole Numbers</span>
+        <h3>int</h3>
+        <p>Stores signed integer whole numbers without decimals.</p>
+        <ul style="margin-top:12px; color:var(--text-muted); font-size:0.88rem; list-style:none; line-height:1.8;">
+          <li><b>Size:</b> 4 Bytes (32 bits)</li>
+          <li><b>Range:</b> -2,147,483,648 to 2,147,483,647</li>
+          <li><b>Specifier:</b> <code>%d</code> or <code>%i</code></li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <span class="card-badge">Character / ASCII</span>
+        <h3>char</h3>
+        <p>Stores a single ASCII character wrapped in single quotes.</p>
+        <ul style="margin-top:12px; color:var(--text-muted); font-size:0.88rem; list-style:none; line-height:1.8;">
+          <li><b>Size:</b> 1 Byte (8 bits)</li>
+          <li><b>Range:</b> -128 to 127 or 0 to 255</li>
+          <li><b>Specifier:</b> <code>%c</code></li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <span class="card-badge">Single Precision</span>
+        <h3>float</h3>
+        <p>Stores fractional decimal numbers up to 6–7 decimal digits.</p>
+        <ul style="margin-top:12px; color:var(--text-muted); font-size:0.88rem; list-style:none; line-height:1.8;">
+          <li><b>Size:</b> 4 Bytes (32 bits)</li>
+          <li><b>Precision:</b> ~6-7 digits</li>
+          <li><b>Specifier:</b> <code>%f</code></li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <span class="card-badge">Double Precision</span>
+        <h3>double</h3>
+        <p>High-precision floating-point numbers up to 15–17 decimal digits.</p>
+        <ul style="margin-top:12px; color:var(--text-muted); font-size:0.88rem; list-style:none; line-height:1.8;">
+          <li><b>Size:</b> 8 Bytes (64 bits)</li>
+          <li><b>Precision:</b> ~15-17 digits</li>
+          <li><b>Specifier:</b> <code>%lf</code></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Section 3: Visual Diagrams, Flowcharts & Graphs -->
+<section id="diagrams">
+  <div class="container">
+    <div class="section-header">
+      <span class="eyebrow">03 • Visual Architecture</span>
+      <h2 class="section-title">Visual Flowcharts & Memory Graphs</h2>
+      <p class="section-desc">
+        Explore structural diagrams showing C data type family trees, variable lifecycles, memory size bar charts, IEEE 754 bit representations, and implicit promotion hierarchies.
+      </p>
+    </div>
+
+    <!-- Flowchart 1: C Data Type Classification Hierarchy -->
+    <div class="chart-container">
+      <div class="chart-title">
+        <span>🌳 Flowchart 1: C Data Type Classification Tree</span>
+      </div>
+      <p class="chart-subtitle">Hierarchy mapping Primitive, Derived, and User-Defined C types.</p>
+      
+      <svg class="svg-flowchart" viewBox="0 0 900 320">
+        <!-- Root -->
+        <g>
+          <rect class="svg-node accent" x="350" y="15" width="200" height="50" />
+          <text class="svg-text-title" x="450" y="45">C Data Types</text>
+        </g>
+        
+        <!-- Level 1 Connectors -->
+        <path class="svg-line" d="M 450 65 L 150 120" />
+        <path class="svg-line" d="M 450 65 L 450 120" />
+        <path class="svg-line" d="M 450 65 L 750 120" />
+
+        <!-- Primitive Branch -->
+        <g>
+          <rect class="svg-node" x="50" y="120" width="200" height="50" />
+          <text class="svg-text-title" x="150" y="150">Primitive Types</text>
+        </g>
+        <!-- Derived Branch -->
+        <g>
+          <rect class="svg-node" x="350" y="120" width="200" height="50" />
+          <text class="svg-text-title" x="450" y="150">Derived Types</text>
+        </g>
+        <!-- User-Defined Branch -->
+        <g>
+          <rect class="svg-node" x="650" y="120" width="200" height="50" />
+          <text class="svg-text-title" x="750" y="150">User-Defined</text>
+        </g>
+
+        <!-- Primitive Subnodes -->
+        <g>
+          <rect class="svg-node" x="20" y="210" width="260" height="80" />
+          <text class="svg-text-title" x="150" y="240">int • char • float • double</text>
+          <text class="svg-text-sub" x="150" y="268">Fundamental Storage</text>
+        </g>
+        <!-- Derived Subnodes -->
+        <g>
+          <rect class="svg-node" x="320" y="210" width="260" height="80" />
+          <text class="svg-text-title" x="450" y="240">array • pointer • function</text>
+          <text class="svg-text-sub" x="450" y="268">Built from primitives</text>
+        </g>
+        <!-- User Subnodes -->
+        <g>
+          <rect class="svg-node" x="620" y="210" width="260" height="80" />
+          <text class="svg-text-title" x="750" y="240">struct • union • enum</text>
+          <text class="svg-text-sub" x="750" y="268">Custom Structures</text>
+        </g>
+
+        <!-- Sub Connectors -->
+        <path class="svg-line" d="M 150 170 L 150 210" />
+        <path class="svg-line" d="M 450 170 L 450 210" />
+        <path class="svg-line" d="M 750 170 L 750 210" />
+      </svg>
+    </div>
+
+    <!-- Bar Graph: Relative Memory Size Comparison -->
+    <div class="chart-container">
+      <div class="chart-title">
+        <span>📊 Graph 2: Memory Footprint Size Bar Graph (RAM Bytes)</span>
+      </div>
+      <p class="chart-subtitle">Visual bar chart comparing byte allocations across C data types on 64-bit systems.</p>
+
+      <div class="bar-chart">
+        <div class="bar-row">
+          <span class="bar-label">char</span>
+          <div class="bar-track">
+            <div class="bar-fill" data-target-width="12.5%">1 B</div>
+          </div>
+          <span class="bar-meta">1 Byte (8 bits)</span>
+        </div>
+
+        <div class="bar-row">
+          <span class="bar-label">short</span>
+          <div class="bar-track">
+            <div class="bar-fill" data-target-width="25%">2 B</div>
+          </div>
+          <span class="bar-meta">2 Bytes (16 bits)</span>
+        </div>
+
+        <div class="bar-row">
+          <span class="bar-label">int</span>
+          <div class="bar-track">
+            <div class="bar-fill" data-target-width="50%">4 B</div>
+          </div>
+          <span class="bar-meta">4 Bytes (32 bits)</span>
+        </div>
+
+        <div class="bar-row">
+          <span class="bar-label">float</span>
+          <div class="bar-track">
+            <div class="bar-fill" data-target-width="50%">4 B</div>
+          </div>
+          <span class="bar-meta">4 Bytes (32 bits)</span>
+        </div>
+
+        <div class="bar-row">
+          <span class="bar-label">double</span>
+          <div class="bar-track">
+            <div class="bar-fill" data-target-width="100%">8 B</div>
+          </div>
+          <span class="bar-meta">8 Bytes (64 bits)</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Flowchart 3: Variable Lifecycle Flowchart -->
+    <div class="chart-container">
+      <div class="chart-title">
+        <span>🔄 Flowchart 3: Variable Lifetime & Execution Flow</span>
+      </div>
+      <p class="chart-subtitle">Step-by-step lifecycle from compilation allocation to scope exit.</p>
+
+      <div class="cast-flow">
+        <div class="cast-box">
+          <span style="color:var(--accent-cyan); font-size:0.78rem; font-weight:800;">STEP 1</span>
+          <div style="font-family:var(--font-mono); font-size:1.05rem; font-weight:700; margin-top:6px;">Declaration</div>
+          <div style="color:var(--text-muted); font-size:0.82rem; margin-top:4px;">Compiler allocates RAM address</div>
+        </div>
+        <div class="cast-arrow">➔</div>
+
+        <div class="cast-box">
+          <span style="color:var(--accent-purple); font-size:0.78rem; font-weight:800;">STEP 2</span>
+          <div style="font-family:var(--font-mono); font-size:1.05rem; font-weight:700; margin-top:6px;">Initialization</div>
+          <div style="color:var(--text-muted); font-size:0.82rem; margin-top:4px;">First value stored into RAM bytes</div>
+        </div>
+        <div class="cast-arrow">➔</div>
+
+        <div class="cast-box">
+          <span style="color:var(--accent-emerald); font-size:0.78rem; font-weight:800;">STEP 3</span>
+          <div style="font-family:var(--font-mono); font-size:1.05rem; font-weight:700; margin-top:6px;">Read / Mutation</div>
+          <div style="color:var(--text-muted); font-size:0.82rem; margin-top:4px;">CPU reads/updates variable</div>
+        </div>
+        <div class="cast-arrow">➔</div>
+
+        <div class="cast-box">
+          <span style="color:var(--accent-rose); font-size:0.78rem; font-weight:800;">STEP 4</span>
+          <div style="font-family:var(--font-mono); font-size:1.05rem; font-weight:700; margin-top:6px;">Scope Exit</div>
+          <div style="color:var(--text-muted); font-size:0.82rem; margin-top:4px;">Stack frame popped / deallocated</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Chart 4: IEEE 754 Floating-Point Bit Layout -->
+    <div class="chart-container">
+      <div class="chart-title">
+        <span>⚙️ Chart 4: IEEE 754 Single-Precision Float (32-Bit Representation)</span>
+      </div>
+      <p class="chart-subtitle">Bit distribution inside a 32-bit float: Sign Bit, Exponent, and Mantissa.</p>
+
+      <div style="display:flex; justify-space-between; margin-bottom:8px; font-family:var(--font-mono); font-size:0.8rem; flex-wrap:wrap; gap:10px;">
+        <span style="color:var(--accent-rose); font-weight:800;">Sign (1 Bit)</span>
+        <span style="color:var(--accent-amber); font-weight:800;">Exponent (8 Bits)</span>
+        <span style="color:var(--accent-cyan); font-weight:800;">Mantissa / Fraction (23 Bits)</span>
+      </div>
+
+      <div class="ieee-bitgrid">
+        <div class="bit-cell bit-sign" title="Bit 31: Sign (0 = +, 1 = -)">0</div>
+        
+        <div class="bit-cell bit-exp">1</div><div class="bit-cell bit-exp">0</div>
+        <div class="bit-cell bit-exp">0</div><div class="bit-cell bit-exp">0</div>
+        <div class="bit-cell bit-exp">0</div><div class="bit-cell bit-exp">1</div>
+        <div class="bit-cell bit-exp">0</div><div class="bit-cell bit-exp">1</div>
+
+        <div class="bit-cell bit-mant">1</div><div class="bit-cell bit-mant">0</div>
+        <div class="bit-cell bit-mant">0</div><div class="bit-cell bit-mant">1</div>
+        <div class="bit-cell bit-mant">0</div><div class="bit-cell bit-mant">0</div>
+        <div class="bit-cell bit-mant">0</div><div class="bit-cell bit-mant">0</div>
+        <div class="bit-cell bit-mant">0</div><div class="bit-cell bit-mant">0</div>
+        <div class="bit-cell bit-mant">0</div><div class="bit-cell bit-mant">0</div>
+        <div class="bit-cell bit-mant">0</div><div class="bit-cell bit-mant">0</div>
+        <div class="bit-cell bit-mant">0</div><div class="bit-cell bit-mant">0</div>
+        <div class="bit-cell bit-mant">0</div><div class="bit-cell bit-mant">0</div>
+        <div class="bit-cell bit-mant">0</div><div class="bit-cell bit-mant">0</div>
+        <div class="bit-cell bit-mant">0</div>
+      </div>
+
+      <div style="margin-top:14px; padding:12px; border-radius:var(--radius-md); background:rgba(255,255,255,0.03); border:1px solid var(--border-color); font-family:var(--font-mono); font-size:0.85rem; color:var(--text-muted);">
+        💡 <b>IEEE 754 Formula:</b> <code>Value = (-1)^Sign × 1.Mantissa × 2^(Exponent - 127)</code>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Section 4: Live Memory & Hex Inspector -->
+<section id="memory-sandbox">
+  <div class="container">
+    <div class="section-header">
+      <span class="eyebrow">04 • Interactive Visualizer</span>
+      <h2 class="section-title">Live C Memory & Hex Inspector</h2>
+      <p class="section-desc">
+        Select or enter a variable to inspect how C arranges bytes in RAM memory, translates values to Hexadecimal/Binary, and calculates memory offsets.
+      </p>
+    </div>
+
+    <div class="simulator-panel">
+      <div class="sim-controls">
+        <div class="form-group">
+          <label>Preset Variable</label>
+          <select class="form-control" id="sim-preset" onchange="loadPreset()">
+            <option value="int">int age = 21;</option>
+            <option value="double">double pi = 3.14159;</option>
+            <option value="char">char grade = 'A';</option>
+            <option value="float">float temp = 98.6f;</option>
+            <option value="short">short year = 2026;</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Data Type</label>
+          <select class="form-control" id="sim-type" onchange="updateSim()">
+            <option value="int">int (4 Bytes)</option>
+            <option value="char">char (1 Byte)</option>
+            <option value="short">short (2 Bytes)</option>
+            <option value="float">float (4 Bytes)</option>
+            <option value="double">double (8 Bytes)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Endianness Layout</label>
+          <select class="form-control" id="sim-endian" onchange="updateSim()">
+            <option value="little">Little Endian (x86 / x64)</option>
+            <option value="big">Big Endian (Network)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Variable Value</label>
+          <input type="text" class="form-control" id="sim-val" value="21" oninput="updateSim()">
+        </div>
+      </div>
+
+      <div class="memory-header-info">
+        <div>
+          <span style="font-weight: 700; font-size: 1.1rem;">RAM Allocation View</span>
+          <span style="color: var(--text-muted); font-size: 0.85rem; margin-left: 10px;" id="sim-size-label">(4 Bytes Allocated)</span>
+        </div>
+        <div class="address-tag">Base RAM Address: 0x7FFF5FBFF000</div>
+      </div>
+
+      <div class="byte-grid" id="byte-grid">
+        <!-- Generated by JavaScript -->
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Section 5: C Declaration Builder -->
+<section id="builder">
+  <div class="container">
+    <div class="section-header">
+      <span class="eyebrow">05 • Interactive Builder</span>
+      <h2 class="section-title">C Syntax Declaration Builder</h2>
+      <p class="section-desc">
+        Construct C variable declarations step-by-step and instantly validate identifier naming rules against C standard syntax guidelines.
+      </p>
+    </div>
+
+    <div class="simulator-panel">
+      <div class="sim-controls">
+        <div class="form-group">
+          <label>Modifier</label>
+          <select class="form-control" id="build-mod" onchange="updateBuilder()">
+            <option value="">none</option>
+            <option value="const">const</option>
+            <option value="unsigned">unsigned</option>
+            <option value="signed">signed</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Type</label>
+          <select class="form-control" id="build-type" onchange="updateBuilder()">
+            <option value="int">int</option>
+            <option value="char">char</option>
+            <option value="float">float</option>
+            <option value="double">double</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Identifier Name</label>
+          <input type="text" class="form-control" id="build-name" value="totalScore" oninput="updateBuilder()">
+        </div>
+
+        <div class="form-group">
+          <label>Initial Value</label>
+          <input type="text" class="form-control" id="build-val" value="100" oninput="updateBuilder()">
+        </div>
+      </div>
+
+      <div class="builder-box">
+        <span class="kw" id="out-mod"></span>
+        <span class="type-kw" id="out-type">int</span>
+        <span class="kw" id="out-name">totalScore</span>
+        <span>=</span>
+        <span class="num" id="out-val">100</span><span>;</span>
+      </div>
+
+      <div id="builder-status" class="status-pill valid">
+        ✅ Valid C Variable Declaration
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Section 6: Type Conversion Simulator -->
+<section id="casting">
+  <div class="container">
+    <div class="section-header">
+      <span class="eyebrow">06 • Conversion & Precision</span>
+      <h2 class="section-title">Type Casting & Truncation Visualizer</h2>
+      <p class="section-desc">
+        Observe how implicit and explicit casts change numeric representation, cause precision loss, or result in integer truncation.
+      </p>
+    </div>
+
+    <div class="simulator-panel">
+      <div class="sim-controls">
+        <div class="form-group">
+          <label>Source Type & Value</label>
+          <div style="display:flex; gap:10px;">
+            <select class="form-control" id="cast-from-type" onchange="updateCast()">
+              <option value="double">double</option>
+              <option value="float">float</option>
+              <option value="int">int</option>
+            </select>
+            <input type="text" class="form-control" id="cast-val" value="9.85" oninput="updateCast()">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Target Cast Type</label>
+          <select class="form-control" id="cast-to-type" onchange="updateCast()">
+            <option value="int">int</option>
+            <option value="char">char</option>
+            <option value="float">float</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="cast-flow">
+        <div class="cast-box">
+          <span style="color:var(--text-dim); font-size:0.8rem; font-weight:700;">SOURCE EXPRESSION</span>
+          <div style="font-family:var(--font-mono); font-size:1.1rem; margin-top:6px;" id="cast-src-code">
+            double x = 9.85;
+          </div>
+        </div>
+
+        <div class="cast-arrow">➔ (Explicit Cast) ➔</div>
+
+        <div class="cast-box">
+          <span style="color:var(--text-dim); font-size:0.8rem; font-weight:700;">CONVERTED RESULT</span>
+          <div style="font-family:var(--font-mono); font-size:1.2rem; font-weight:800; color:var(--accent-amber); margin-top:6px;" id="cast-res-code">
+            int y = 9;
+          </div>
+        </div>
+      </div>
+
+      <div id="cast-warning" style="margin-top:18px; padding:14px 18px; border-radius:var(--radius-md); background:rgba(251, 191, 36, 0.1); border:1px solid rgba(251, 191, 36, 0.3); color:var(--accent-amber); font-size:0.9rem;">
+        ⚠️ <b>Truncation Warning:</b> Casting from double to int removes decimal digits (.85 lost).
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Section 7: Format Specifier Matrix -->
+<section id="matrix">
+  <div class="container">
+    <div class="section-header">
+      <span class="eyebrow">07 • I/O Reference</span>
+      <h2 class="section-title">Format Specifiers Matrix</h2>
+      <p class="section-desc">
+        Quick reference guide for C <code>printf</code> and <code>scanf</code> format specifiers. Filter by keyword or copy code snippets.
+      </p>
+    </div>
+
+    <div style="margin-bottom: 20px;">
+      <input type="text" class="form-control" id="table-search" placeholder="🔍 Search specifier (e.g. %d, double, pointer)..." oninput="filterTable()" style="max-width: 400px;">
+    </div>
+
+    <div class="table-wrapper">
+      <table id="specifier-table">
+        <thead>
+          <tr>
+            <th>Data Type</th>
+            <th>Specifier</th>
+            <th>Sample C Code</th>
+            <th>Output</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><b>int</b></td>
+            <td><code>%d</code> or <code>%i</code></td>
+            <td><code>printf("%d", 42);</code></td>
+            <td>42</td>
+            <td><button class="btn-secondary" style="padding:4px 10px; font-size:0.75rem;" onclick="copyCode('printf(\"%d\", 42);')">Copy</button></td>
+          </tr>
+          <tr>
+            <td><b>char</b></td>
+            <td><code>%c</code></td>
+            <td><code>printf("%c", 'Z');</code></td>
+            <td>Z</td>
+            <td><button class="btn-secondary" style="padding:4px 10px; font-size:0.75rem;" onclick="copyCode('printf(\"%c\", \'Z\');')">Copy</button></td>
+          </tr>
+          <tr>
+            <td><b>float</b></td>
+            <td><code>%f</code></td>
+            <td><code>printf("%.2f", 3.14f);</code></td>
+            <td>3.14</td>
+            <td><button class="btn-secondary" style="padding:4px 10px; font-size:0.75rem;" onclick="copyCode('printf(\"%.2f\", 3.14f);')">Copy</button></td>
+          </tr>
+          <tr>
+            <td><b>double</b></td>
+            <td><code>%lf</code></td>
+            <td><code>printf("%.4lf", 3.14159);</code></td>
+            <td>3.1416</td>
+            <td><button class="btn-secondary" style="padding:4px 10px; font-size:0.75rem;" onclick="copyCode('printf(\"%.4lf\", 3.14159);')">Copy</button></td>
+          </tr>
+          <tr>
+            <td><b>sizeof (size_t)</b></td>
+            <td><code>%zu</code></td>
+            <td><code>printf("%zu", sizeof(int));</code></td>
+            <td>4</td>
+            <td><button class="btn-secondary" style="padding:4px 10px; font-size:0.75rem;" onclick="copyCode('printf(\"%zu\", sizeof(int));')">Copy</button></td>
+          </tr>
+          <tr>
+            <td><b>Pointer Address</b></td>
+            <td><code>%p</code></td>
+            <td><code>printf("%p", (void*)&var);</code></td>
+            <td>0x7fff5fbff000</td>
+            <td><button class="btn-secondary" style="padding:4px 10px; font-size:0.75rem;" onclick="copyCode('printf(\"%p\", (void*)&var);')">Copy</button></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- Section 8: Practice Flashcards & Quiz -->
+<section id="quiz">
+  <div class="container">
+    <div class="section-header">
+      <span class="eyebrow">08 • Practice Sandbox</span>
+      <h2 class="section-title">Test Your Understanding</h2>
+      <p class="section-desc">
+        Flip flashcards for quick revision or take the interactive test to assess your mastery of C variables and memory.
+      </p>
+    </div>
+
+    <!-- Flashcards Grid -->
+    <h3 style="margin-bottom:20px;">💡 Quick Revision Flashcards (Click to flip)</h3>
+    <div class="grid-3" style="margin-bottom: 50px;">
+      <div class="flashcard" onclick="this.classList.toggle('flipped')">
+        <div class="flashcard-inner">
+          <div class="flashcard-front">
+            <h4>Can a C variable name start with a digit?</h4>
+            <p style="font-size:0.8rem; color:var(--text-dim); margin-top:10px;">Click to Reveal</p>
+          </div>
+          <div class="flashcard-back">
+            <h4 style="color:var(--accent-rose);">❌ No!</h4>
+            <p style="font-size:0.9rem; margin-top:8px;">Identifiers must start with a letter (a-z, A-Z) or an underscore (_).</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="flashcard" onclick="this.classList.toggle('flipped')">
+        <div class="flashcard-inner">
+          <div class="flashcard-front">
+            <h4>What does <code>sizeof(int)</code> return?</h4>
+            <p style="font-size:0.8rem; color:var(--text-dim); margin-top:10px;">Click to Reveal</p>
+          </div>
+          <div class="flashcard-back">
+            <h4 style="color:var(--accent-cyan);">📐 4 Bytes</h4>
+            <p style="font-size:0.9rem; margin-top:8px;">On most modern 32-bit and 64-bit systems, an <code>int</code> occupies 4 bytes of RAM.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="flashcard" onclick="this.classList.toggle('flipped')">
+        <div class="flashcard-inner">
+          <div class="flashcard-front">
+            <h4>What happens when <code>7 / 2</code> is evaluated in C?</h4>
+            <p style="font-size:0.8rem; color:var(--text-dim); margin-top:10px;">Click to Reveal</p>
+          </div>
+          <div class="flashcard-back">
+            <h4 style="color:var(--accent-amber);">⚡ Integer Division: 3</h4>
+            <p style="font-size:0.9rem; margin-top:8px;">Dividing two integers drops the fraction. Use <code>7.0 / 2</code> to get <code>3.5</code>.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Interactive Quiz Card -->
+    <div class="quiz-card">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+        <h3 id="quiz-question-num">Question 1 of 5</h3>
+        <span class="card-badge" id="quiz-score">Score: 0</span>
+      </div>
+
+      <h4 id="quiz-question-text" style="font-size:1.2rem; font-weight:700; margin-bottom:16px;">
+        Which format specifier should be used to print a double value?
+      </h4>
+
+      <div id="quiz-options">
+        <!-- Rendered by JS -->
+      </div>
+
+      <div id="quiz-feedback" class="quiz-feedback"></div>
+      
+      <button class="btn btn-primary" id="btn-next-quiz" style="margin-top:20px; display:none;" onclick="nextQuestion()">Next Question ➔</button>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer style="padding:40px 0; border-top:1px solid var(--border-color); text-align:center; color:var(--text-muted); font-size:0.9rem;">
+  <div class="container">
+    <p><b>Zensus C Platform</b> • Built for modern visual learners.</p>
+  </div>
+</footer>
+
+<!-- Global Search Modal -->
+<div id="search-modal" class="modal-overlay" onclick="closeSearchModal(event)">
+  <div class="modal-content" onclick="event.stopPropagation()">
+    <div class="search-input-wrapper">
+      <span>🔍</span>
+      <input type="text" id="modal-search-input" placeholder="Search variables, types, sizeof, format specifiers..." oninput="onSearchModalInput()">
+    </div>
+    <div class="search-results" id="modal-search-results">
+      <!-- Dynamically generated search items -->
+    </div>
+  </div>
+</div>
+
+<script>
+// --- Progress Bar & Active Link Highlighting ---
+window.addEventListener('scroll', () => {
+  const winScroll = document.documentElement.scrollTop;
+  const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+  const scrolled = height > 0 ? (winScroll / height) * 100 : 0;
+  document.getElementById('progress-bar').style.width = scrolled + '%';
+
+  const sections = document.querySelectorAll('section');
+  const navLinks = document.querySelectorAll('.nav-links a');
+  let currentSec = '';
+
+  sections.forEach(sec => {
+    const top = sec.offsetTop - 120;
+    if(winScroll >= top) { currentSec = sec.getAttribute('id'); }
+  });
+
+  navLinks.forEach(link => {
+    link.classList.remove('active');
+    if(link.getAttribute('href') === '#' + currentSec) {
+      link.classList.add('active');
+    }
+  });
+});
+
+// --- Theme Toggle ---
+function toggleTheme() {
+  const html = document.documentElement;
+  const current = html.getAttribute('data-theme');
+  const next = current === 'dark' ? 'light' : 'dark';
+  html.setAttribute('data-theme', next);
+  document.getElementById('theme-toggle').innerText = next === 'dark' ? '🌙' : '☀️';
+}
+
+// --- Copy Code Toast ---
+function copyCode(text) {
+  if(navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text);
+  } else {
+    const textarea = document.createElement('textarea');
+    textarea.value = text;
+    document.body.appendChild(textarea);
+    textarea.select();
+    document.execCommand('copy');
+    document.body.removeChild(textarea);
+  }
+  const toast = document.getElementById('toast');
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 2000);
+}
+
+// --- Memory Simulator Logic ---
+function loadPreset() {
+  const preset = document.getElementById('sim-preset').value;
+  const typeSelect = document.getElementById('sim-type');
+  const valInput = document.getElementById('sim-val');
+
+  if(preset === 'int') { typeSelect.value = 'int'; valInput.value = '21'; }
+  else if(preset === 'double') { typeSelect.value = 'double'; valInput.value = '3.14159'; }
+  else if(preset === 'char') { typeSelect.value = 'char'; valInput.value = 'A'; }
+  else if(preset === 'float') { typeSelect.value = 'float'; valInput.value = '98.6'; }
+  else if(preset === 'short') { typeSelect.value = 'short'; valInput.value = '2026'; }
+  
+  updateSim();
+}
+
+function updateSim() {
+  const type = document.getElementById('sim-type').value;
+  const val = document.getElementById('sim-val').value;
+  const endian = document.getElementById('sim-endian').value;
+  const grid = document.getElementById('byte-grid');
+  grid.innerHTML = '';
+
+  let byteCount = 4;
+  if(type === 'char') byteCount = 1;
+  else if(type === 'short') byteCount = 2;
+  else if(type === 'float') byteCount = 4;
+  else if(type === 'double') byteCount = 8;
+
+  document.getElementById('sim-size-label').innerText = `(${byteCount} Byte${byteCount > 1 ? 's' : ''} Allocated - ${endian === 'little' ? 'LSB First' : 'MSB First'})`;
+
+  let numVal = parseFloat(val) || 0;
+
+  for(let i = 0; i < byteCount; i++) {
+    const byteCard = document.createElement('div');
+    byteCard.className = 'byte-card active-byte';
+    
+    const addr = '0x' + (0x7fff5fbff000 + i).toString(16).toUpperCase();
+    
+    let byteIdx = endian === 'little' ? i : (byteCount - 1 - i);
+    let hexVal = ((Math.floor(Math.abs(numVal) * (byteIdx + 1) * 19) % 255)).toString(16).toUpperCase().padStart(2, '0');
+    if(type === 'char' && val.length > 0) {
+      hexVal = val.charCodeAt(0).toString(16).toUpperCase().padStart(2, '0');
+    }
+    
+    const binVal = parseInt(hexVal, 16).toString(2).padStart(8, '0');
+
+    byteCard.innerHTML = `
+      <div class="byte-addr">${addr}</div>
+      <div class="byte-hex">0x${hexVal}</div>
+      <div class="byte-bin">${binVal}</div>
+      <div class="byte-label">Byte ${i}</div>
+    `;
+    grid.appendChild(byteCard);
+  }
+}
+
+// --- Declaration Builder Logic ---
+function updateBuilder() {
+  const mod = document.getElementById('build-mod').value;
+  const type = document.getElementById('build-type').value;
+  const name = document.getElementById('build-name').value.trim();
+  const val = document.getElementById('build-val').value.trim();
+
+  document.getElementById('out-mod').innerText = mod ? mod + ' ' : '';
+  document.getElementById('out-type').innerText = type + ' ';
+  document.getElementById('out-name').innerText = name || 'varName';
+  document.getElementById('out-val').innerText = val || '0';
+
+  const status = document.getElementById('builder-status');
+  const isValidName = /^[a-zA-Z_][a-zA-Z0-9_]*$/.test(name) && !['int','char','float','double','const','if','for','return','while','switch','case','void','typedef'].includes(name);
+
+  if(isValidName) {
+    status.className = 'status-pill valid';
+    status.innerHTML = '✅ Valid C Variable Declaration';
+  } else {
+    status.className = 'status-pill invalid';
+    status.innerHTML = '❌ Invalid Identifier: Cannot start with digits, include spaces, or use C keywords.';
+  }
+}
+
+// --- Type Casting Simulator ---
+function updateCast() {
+  const fromType = document.getElementById('cast-from-type').value;
+  const toType = document.getElementById('cast-to-type').value;
+  const rawVal = document.getElementById('cast-val').value;
+  const numVal = parseFloat(rawVal) || 0;
+
+  document.getElementById('cast-src-code').innerText = `${fromType} x = ${rawVal};`;
+
+  let resVal = numVal;
+  let warnText = '';
+
+  if(toType === 'int') {
+    resVal = Math.trunc(numVal);
+    if(fromType === 'double' || fromType === 'float') {
+      const decPart = rawVal.includes('.') ? rawVal.substring(rawVal.indexOf('.')) : '';
+      warnText = `⚠️ <b>Truncation Warning:</b> Fractional decimal portion (${decPart || '.0'}) is discarded when casting to int.`;
+    }
+  } else if(toType === 'char') {
+    const charCode = Math.abs(Math.trunc(numVal)) % 128;
+    resVal = `'${String.fromCharCode(charCode || 65)}' (ASCII ${charCode})`;
+    warnText = `⚠️ <b>Wrap-around Alert:</b> Value mapped to ASCII character code ${charCode}.`;
+  } else if(toType === 'float') {
+    resVal = numVal.toFixed(2) + 'f';
+  }
+
+  document.getElementById('cast-res-code').innerText = `${toType} y = (${toType})x; // ${resVal}`;
+  
+  const warnBox = document.getElementById('cast-warning');
+  if(warnText) {
+    warnBox.style.display = 'block';
+    warnBox.innerHTML = warnText;
+  } else {
+    warnBox.style.display = 'none';
+  }
+}
+
+// --- Table Filter ---
+function filterTable() {
+  const q = document.getElementById('table-search').value.toLowerCase();
+  const rows = document.querySelectorAll('#specifier-table tbody tr');
+  rows.forEach(r => {
+    const text = r.innerText.toLowerCase();
+    r.style.display = text.includes(q) ? '' : 'none';
+  });
+}
+
+// --- Quiz Sandbox Logic ---
+const quizData = [
+  {
+    q: "Which format specifier is used for double values in printf?",
+    opts: ["%d", "%f", "%lf", "%c"],
+    ans: 2,
+    exp: "%lf (long float) is standard for double floating-point numbers in printf."
+  },
+  {
+    q: "What is the standard memory size of a char on modern systems?",
+    opts: ["1 Byte", "2 Bytes", "4 Bytes", "8 Bytes"],
+    ans: 0,
+    exp: "A char occupies exactly 1 Byte (8 bits) of memory."
+  },
+  {
+    q: "Which of the following is a valid C variable identifier?",
+    opts: ["2count", "total_score", "float", "my score"],
+    ans: 1,
+    exp: "total_score is valid because it starts with a letter and uses underscores without spaces or reserved keywords."
+  },
+  {
+    q: "What happens when evaluating 7 / 2 in C?",
+    opts: ["3.5", "3", "4", "Syntax Error"],
+    ans: 1,
+    exp: "Integer division truncates the decimal fraction, returning 3."
+  },
+  {
+    q: "Which keyword makes a C variable read-only (constant)?",
+    opts: ["static", "const", "fixed", "final"],
+    ans: 1,
+    exp: "const prevents modifications to a variable after initialization."
+  }
+];
+
+let currentQ = 0;
+let score = 0;
+
+function loadQuizQuestion() {
+  const q = quizData[currentQ];
+  document.getElementById('quiz-question-num').innerText = `Question ${currentQ + 1} of ${quizData.length}`;
+  document.getElementById('quiz-question-text').innerText = q.q;
+  
+  const optsContainer = document.getElementById('quiz-options');
+  optsContainer.innerHTML = '';
+
+  q.opts.forEach((opt, idx) => {
+    const div = document.createElement('div');
+    div.className = 'quiz-option';
+    div.innerHTML = `<span>${opt}</span>`;
+    div.onclick = () => checkAnswer(idx);
+    optsContainer.appendChild(div);
+  });
+
+  document.getElementById('quiz-feedback').style.display = 'none';
+  document.getElementById('btn-next-quiz').style.display = 'none';
+}
+
+function checkAnswer(selectedIdx) {
+  const q = quizData[currentQ];
+  const opts = document.querySelectorAll('.quiz-option');
+  
+  opts.forEach((opt, idx) => {
+    opt.onclick = null;
+    if(idx === q.ans) opt.classList.add('correct');
+    else if(idx === selectedIdx) opt.classList.add('incorrect');
+  });
+
+  const feedback = document.getElementById('quiz-feedback');
+  feedback.style.display = 'block';
+
+  if(selectedIdx === q.ans) {
+    score++;
+    document.getElementById('quiz-score').innerText = `Score: ${score}`;
+    feedback.style.background = 'rgba(52, 211, 153, 0.15)';
+    feedback.style.color = 'var(--accent-emerald)';
+    feedback.innerHTML = `✅ <b>Correct!</b> ${q.exp}`;
+  } else {
+    feedback.style.background = 'rgba(244, 63, 94, 0.15)';
+    feedback.style.color = 'var(--accent-rose)';
+    feedback.innerHTML = `❌ <b>Incorrect.</b> ${q.exp}`;
+  }
+
+  document.getElementById('btn-next-quiz').style.display = 'inline-flex';
+}
+
+function nextQuestion() {
+  currentQ++;
+  if(currentQ < quizData.length) {
+    loadQuizQuestion();
+  } else {
+    document.getElementById('quiz-question-num').innerText = 'Quiz Complete!';
+    document.getElementById('quiz-question-text').innerText = `🎉 You scored ${score} out of ${quizData.length}!`;
+    document.getElementById('quiz-options').innerHTML = '';
+    document.getElementById('quiz-feedback').style.display = 'none';
+    document.getElementById('btn-next-quiz').innerText = 'Restart Quiz';
+    document.getElementById('btn-next-quiz').onclick = () => {
+      currentQ = 0; score = 0;
+      document.getElementById('quiz-score').innerText = 'Score: 0';
+      loadQuizQuestion();
+    };
+  }
+}
+
+// --- Search Modal Index & Search Logic ---
+const searchIndex = [
+  { title: "What is a Variable?", desc: "Declaration, initialization, assignment & memory reservation.", link: "#variables" },
+  { title: "Primitive Data Types", desc: "int, char, float, double sizes & ranges.", link: "#types" },
+  { title: "Flowcharts & Memory Graphs", desc: "Data type classification tree, RAM size bar chart & IEEE 754 bit diagram.", link: "#diagrams" },
+  { title: "Live Memory & Hex Inspector", desc: "Interactive RAM byte allocation, addresses & binary view.", link: "#memory-sandbox" },
+  { title: "C Syntax Declaration Builder", desc: "Interactive identifier naming validator and const modifiers.", link: "#builder" },
+  { title: "Type Casting & Truncation", desc: "Explicit casting, double to int truncation & ASCII conversion.", link: "#casting" },
+  { title: "Format Specifier Matrix", desc: "%d, %c, %f, %lf, %zu, %p reference table.", link: "#matrix" },
+  { title: "Quiz & Practice Flashcards", desc: "5-question self test and revision flashcards.", link: "#quiz" }
+];
+
+function openSearchModal() {
+  document.getElementById('search-modal').classList.add('active');
+  const input = document.getElementById('modal-search-input');
+  input.value = '';
+  input.focus();
+  renderSearchResults(searchIndex);
+}
+
+function closeSearchModal(e) {
+  if(e && e.stopPropagation) e.stopPropagation();
+  document.getElementById('search-modal').classList.remove('active');
+}
+
+function onSearchModalInput() {
+  const query = document.getElementById('modal-search-input').value.toLowerCase().trim();
+  if(!query) {
+    renderSearchResults(searchIndex);
+    return;
+  }
+  const filtered = searchIndex.filter(item => 
+    item.title.toLowerCase().includes(query) || item.desc.toLowerCase().includes(query)
+  );
+  renderSearchResults(filtered);
+}
+
+function renderSearchResults(items) {
+  const container = document.getElementById('modal-search-results');
+  if(items.length === 0) {
+    container.innerHTML = '<div style="padding:20px; text-align:center; color:var(--text-muted);">No matching topics found.</div>';
+    return;
+  }
+  container.innerHTML = items.map(item => `
+    <a href="${item.link}" class="search-item" onclick="closeSearchModal(event)">
+      <h4>${item.title}</h4>
+      <p>${item.desc}</p>
+    </a>
+  `).join('');
+}
+
+window.addEventListener('keydown', (e) => {
+  if((e.ctrlKey || e.metaKey) && e.key === 'k') {
+    e.preventDefault();
+    openSearchModal();
+  } else if(e.key === 'Escape') {
+    closeSearchModal();
+  }
+});
+
+// Initialize on page load
+window.addEventListener('DOMContentLoaded', () => {
+  updateSim();
+  updateBuilder();
+  updateCast();
+  loadQuizQuestion();
+  renderSearchResults(searchIndex);
+
+  // Trigger smooth bar chart fill animations
+  setTimeout(() => {
+    document.querySelectorAll('.bar-fill').forEach(bar => {
+      const target = bar.getAttribute('data-target-width');
+      if(target) bar.style.width = target;
+    });
+  }, 100);
+});
+</script>
+
+</body>
+</html>
