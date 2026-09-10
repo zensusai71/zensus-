@@ -1,0 +1,1249 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zensus — C Input & Output (I/O) — Interactive Visual Masterclass</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg-main: #090d16;
+  --bg-surface: #111927;
+  --bg-surface-hover: #172238;
+  --bg-card: rgba(17, 25, 39, 0.75);
+  --border-color: rgba(255, 255, 255, 0.08);
+  --border-focus: #38bdf8;
+  --text-main: #f1f5f9;
+  --text-muted: #94a3b8;
+  --text-dim: #64748b;
+  --accent-cyan: #38bdf8;
+  --accent-purple: #818cf8;
+  --accent-emerald: #34d399;
+  --accent-amber: #fbbf24;
+  --accent-rose: #f43f5e;
+  --grad-primary: linear-gradient(135deg, #38bdf8, #818cf8);
+  --grad-accent: linear-gradient(135deg, #818cf8, #c084fc);
+  --code-bg: #060911;
+  --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.25);
+  --shadow-lg: 0 20px 40px rgba(0, 0, 0, 0.4);
+  --glass-bg: rgba(17, 25, 39, 0.65);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-full: 9999px;
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-mono: 'Fira Code', ui-monospace, monospace;
+}
+
+[data-theme="light"] {
+  --bg-main: #f8fafc;
+  --bg-surface: #ffffff;
+  --bg-surface-hover: #f1f5f9;
+  --bg-card: rgba(255, 255, 255, 0.85);
+  --border-color: rgba(148, 163, 184, 0.2);
+  --border-focus: #0284c7;
+  --text-main: #0f172a;
+  --text-muted: #475569;
+  --text-dim: #64748b;
+  --accent-cyan: #0284c7;
+  --accent-purple: #6366f1;
+  --accent-emerald: #059669;
+  --accent-amber: #d97706;
+  --accent-rose: #e11d48;
+  --grad-primary: linear-gradient(135deg, #0284c7, #6366f1);
+  --grad-accent: linear-gradient(135deg, #6366f1, #9333ea);
+  --code-bg: #0f172a;
+  --shadow-sm: 0 4px 12px rgba(15, 23, 42, 0.05);
+  --shadow-lg: 0 20px 40px rgba(15, 23, 42, 0.1);
+  --glass-bg: rgba(255, 255, 255, 0.8);
+  --glass-border: rgba(148, 163, 184, 0.25);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; font-size: 16px; }
+body {
+  font-family: var(--font-sans);
+  background-color: var(--bg-main);
+  color: var(--text-main);
+  line-height: 1.6;
+  overflow-x: hidden;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Background Mesh Gradients */
+.bg-glow {
+  position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+  pointer-events: none; z-index: -1; overflow: hidden;
+}
+.glow-1 {
+  position: absolute; top: -10%; left: 10%; width: 50vw; height: 50vw;
+  background: radial-gradient(circle, rgba(56, 189, 248, 0.07), transparent 70%);
+}
+.glow-2 {
+  position: absolute; top: 30%; right: -10%; width: 45vw; height: 45vw;
+  background: radial-gradient(circle, rgba(129, 140, 248, 0.08), transparent 70%);
+}
+
+#progress-bar {
+  position: fixed; top: 0; left: 0; height: 3px;
+  background: var(--grad-primary); width: 0%; z-index: 1000;
+  transition: width 0.1s ease-out;
+}
+
+/* Navbar */
+.navbar {
+  position: sticky; top: 0; z-index: 100;
+  background: var(--glass-bg); backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border-color);
+  transition: background 0.3s ease;
+}
+.nav-container {
+  max-width: 1240px; margin: 0 auto; padding: 14px 24px;
+  display: flex; align-items: center; justify-content: space-between; gap: 20px;
+}
+.brand {
+  display: flex; align-items: center; gap: 12px;
+  text-decoration: none; color: var(--text-main); font-weight: 800; font-size: 1.25rem;
+}
+.brand-icon {
+  width: 38px; height: 38px; border-radius: 10px;
+  background: var(--grad-primary); display: grid; place-items: center;
+  color: #fff; font-weight: 900; font-size: 1.2rem;
+  box-shadow: 0 4px 14px rgba(56, 189, 248, 0.3);
+}
+.nav-links { display: flex; align-items: center; gap: 20px; list-style: none; }
+.nav-links a {
+  text-decoration: none; color: var(--text-muted); font-size: 0.92rem; font-weight: 600;
+  transition: color 0.2s ease;
+}
+.nav-links a:hover, .nav-links a.active { color: var(--accent-cyan); }
+.nav-actions { display: flex; align-items: center; gap: 12px; }
+
+.btn-icon {
+  background: var(--bg-surface); border: 1px solid var(--border-color);
+  color: var(--text-main); width: 40px; height: 40px; border-radius: var(--radius-md);
+  display: grid; place-items: center; cursor: pointer; transition: all 0.2s ease;
+}
+.btn-icon:hover { background: var(--bg-surface-hover); border-color: var(--accent-cyan); }
+
+.btn-search {
+  background: var(--bg-surface); border: 1px solid var(--border-color);
+  color: var(--text-muted); padding: 8px 14px; border-radius: var(--radius-md);
+  display: flex; align-items: center; gap: 8px; font-size: 0.88rem; font-weight: 500;
+  cursor: pointer; transition: all 0.2s ease;
+}
+.btn-search:hover { border-color: var(--accent-cyan); color: var(--text-main); }
+.kbd-shortcut {
+  background: var(--border-color); padding: 2px 6px; border-radius: 4px;
+  font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-muted);
+}
+
+/* Utilities */
+.container { max-width: 1240px; margin: 0 auto; padding: 0 24px; }
+section { padding: 80px 0; border-bottom: 1px solid var(--border-color); }
+.section-header { margin-bottom: 40px; text-align: left; }
+.eyebrow {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 6px 14px; border-radius: var(--radius-full);
+  background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.25);
+  color: var(--accent-cyan); font-size: 0.78rem; font-weight: 800;
+  letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 14px;
+}
+.section-title { font-size: 2.2rem; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 10px; }
+.section-desc { color: var(--text-muted); font-size: 1.05rem; max-width: 720px; line-height: 1.7; }
+
+/* Hero */
+.hero { padding: 90px 0 70px; }
+.hero-grid { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 50px; align-items: center; }
+.hero-title { font-size: clamp(2.8rem, 5vw, 4.2rem); font-weight: 900; line-height: 1.1; letter-spacing: -0.04em; margin-bottom: 20px; }
+.grad-text { background: var(--grad-primary); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.hero-lead { font-size: 1.18rem; color: var(--text-muted); line-height: 1.75; margin-bottom: 32px; }
+.hero-buttons { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 40px; }
+
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 13px 24px; border-radius: var(--radius-md); font-weight: 700; font-size: 0.95rem;
+  text-decoration: none; cursor: pointer; transition: all 0.25s ease; border: 1px solid transparent;
+}
+.btn-primary { background: var(--grad-primary); color: #fff; box-shadow: 0 8px 24px rgba(56, 189, 248, 0.3); }
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(56, 189, 248, 0.4); }
+.btn-secondary { background: var(--bg-surface); border-color: var(--border-color); color: var(--text-main); }
+.btn-secondary:hover { background: var(--bg-surface-hover); border-color: var(--accent-cyan); transform: translateY(-2px); }
+
+.hero-stats {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
+  background: var(--glass-bg); backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-border); padding: 20px; border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+}
+.stat-item { text-align: center; }
+.stat-num { font-size: 1.8rem; font-weight: 800; color: var(--accent-cyan); display: block; }
+.stat-label { font-size: 0.8rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+
+.code-preview-card {
+  background: var(--code-bg); border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-lg);
+}
+.code-preview-header {
+  background: rgba(255, 255, 255, 0.03); padding: 12px 18px; border-bottom: 1px solid var(--border-color);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.window-dots { display: flex; gap: 8px; }
+.dot { width: 12px; height: 12px; border-radius: 50%; }
+.dot-red { background: #ff5f56; }
+.dot-yellow { background: #ffbd2e; }
+.dot-green { background: #27c93f; }
+.code-preview-title { font-family: var(--font-mono); font-size: 0.82rem; color: var(--text-dim); }
+.code-body { padding: 22px; font-family: var(--font-mono); font-size: 0.92rem; line-height: 1.8; color: #e2e8f0; overflow-x: auto; }
+
+/* Grid Systems */
+.grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+.grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+
+.card {
+  background: var(--bg-card); backdrop-filter: blur(12px);
+  border: 1px solid var(--border-color); border-radius: var(--radius-lg);
+  padding: 28px; transition: all 0.3s ease; position: relative; overflow: hidden;
+}
+.card:hover { border-color: rgba(56, 189, 248, 0.4); transform: translateY(-4px); box-shadow: var(--shadow-lg); }
+
+.card-badge {
+  display: inline-block; padding: 4px 10px; border-radius: var(--radius-sm);
+  background: rgba(129, 140, 248, 0.12); color: var(--accent-purple);
+  font-size: 0.75rem; font-weight: 700; text-transform: uppercase; margin-bottom: 14px;
+}
+.card h3 { font-size: 1.3rem; font-weight: 700; margin-bottom: 10px; }
+.card p { color: var(--text-muted); font-size: 0.95rem; line-height: 1.6; }
+
+/* Syntax */
+.kw { color: #38bdf8; font-weight: 600; }
+.type-kw { color: #c084fc; font-weight: 600; }
+.str { color: #34d399; }
+.num { color: #fbbf24; }
+.cm { color: #64748b; font-style: italic; }
+.fn { color: #818cf8; }
+
+/* Interactive Terminal & Simulators */
+.simulator-panel {
+  background: var(--bg-surface); border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg); padding: 32px; box-shadow: var(--shadow-lg);
+}
+.sim-controls {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-bottom: 30px;
+  background: var(--bg-main); padding: 20px; border-radius: var(--radius-md); border: 1px solid var(--border-color);
+}
+.form-group { display: flex; flex-direction: column; gap: 6px; }
+.form-group label { font-size: 0.82rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; }
+.form-control {
+  background: var(--bg-surface); border: 1px solid var(--border-color);
+  color: var(--text-main); padding: 10px 14px; border-radius: var(--radius-sm);
+  font-family: var(--font-sans); font-size: 0.95rem; outline: none; transition: border-color 0.2s;
+}
+.form-control:focus { border-color: var(--accent-cyan); }
+
+/* Visual Console Terminal Output Box */
+.terminal-box {
+  background: #000; border: 1px solid rgba(56, 189, 248, 0.3); border-radius: var(--radius-md);
+  padding: 20px; font-family: var(--font-mono); font-size: 1.05rem; color: #38bdf8;
+  margin-top: 20px; position: relative; overflow-x: auto; box-shadow: 0 0 20px rgba(56, 189, 248, 0.15);
+}
+.terminal-header {
+  font-size: 0.75rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px;
+  margin-bottom: 10px; display: flex; justify-content: space-between;
+}
+.char-boundary-grid { display: flex; gap: 2px; margin-top: 10px; }
+.char-cell {
+  width: 24px; height: 34px; border: 1px solid rgba(255, 255, 255, 0.15);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-mono); font-size: 0.95rem; font-weight: 700;
+  border-radius: 4px; background: rgba(255, 255, 255, 0.03);
+}
+.char-cell.space-cell { background: rgba(251, 191, 36, 0.1); border-color: var(--accent-amber); color: var(--accent-amber); }
+
+/* Graphs & SVG */
+.chart-container {
+  background: var(--bg-surface); border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg); padding: 32px; box-shadow: var(--shadow-lg); margin-top: 24px;
+}
+.chart-title { font-size: 1.2rem; font-weight: 800; margin-bottom: 6px; display: flex; align-items: center; gap: 8px; }
+.chart-subtitle { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 24px; }
+.svg-flowchart { width: 100%; height: auto; overflow: visible; }
+.svg-node { fill: var(--bg-surface); stroke: var(--border-color); stroke-width: 2; rx: 12; transition: all 0.3s ease; }
+.svg-node:hover { stroke: var(--accent-cyan); fill: var(--bg-surface-hover); }
+.svg-node.accent { fill: rgba(56, 189, 248, 0.1); stroke: var(--accent-cyan); }
+.svg-text-title { font-family: var(--font-sans); font-size: 15px; font-weight: 800; fill: var(--text-main); text-anchor: middle; }
+.svg-text-sub { font-family: var(--font-mono); font-size: 12px; fill: var(--accent-cyan); text-anchor: middle; }
+.svg-line { stroke: var(--text-dim); stroke-width: 2.5; stroke-dasharray: 4; }
+
+/* Table */
+.table-wrapper {
+  overflow-x: auto; border: 1px solid var(--border-color); border-radius: var(--radius-lg);
+  background: var(--bg-card); backdrop-filter: blur(12px);
+}
+table { width: 100%; border-collapse: collapse; text-align: left; }
+th, td { padding: 16px 20px; border-bottom: 1px solid var(--border-color); }
+th { font-size: 0.82rem; font-weight: 800; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.05em; background: rgba(0, 0, 0, 0.15); }
+td { font-size: 0.95rem; color: var(--text-main); }
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: rgba(255, 255, 255, 0.02); }
+code { font-family: var(--font-mono); font-size: 0.88rem; background: rgba(255, 255, 255, 0.06); padding: 2px 6px; border-radius: 4px; color: var(--accent-cyan); }
+
+/* Flashcard & Quiz */
+.flashcard { perspective: 1000px; height: 220px; cursor: pointer; }
+.flashcard-inner {
+  position: relative; width: 100%; height: 100%; text-align: center;
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-style: preserve-3d; border-radius: var(--radius-lg);
+}
+.flashcard.flipped .flashcard-inner { transform: rotateY(180deg); }
+.flashcard-front, .flashcard-back {
+  position: absolute; width: 100%; height: 100%; backface-visibility: hidden;
+  border-radius: var(--radius-lg); padding: 28px; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; border: 1px solid var(--border-color);
+  background: var(--bg-card); backdrop-filter: blur(12px);
+}
+.flashcard-back { transform: rotateY(180deg); background: var(--bg-surface-hover); border-color: var(--accent-cyan); }
+
+.quiz-card {
+  background: var(--bg-surface); border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg); padding: 32px; box-shadow: var(--shadow-lg);
+}
+.quiz-option {
+  background: var(--bg-main); border: 1px solid var(--border-color);
+  padding: 16px 20px; border-radius: var(--radius-md); margin-top: 12px;
+  cursor: pointer; transition: all 0.2s ease; display: flex; align-items: center; justify-content: space-between; font-weight: 500;
+}
+.quiz-option:hover { border-color: var(--accent-cyan); background: var(--bg-surface-hover); }
+.quiz-option.correct { background: rgba(52, 211, 153, 0.15); border-color: var(--accent-emerald); color: var(--accent-emerald); }
+.quiz-option.incorrect { background: rgba(244, 63, 94, 0.15); border-color: var(--accent-rose); color: var(--accent-rose); }
+.quiz-feedback { margin-top: 20px; padding: 16px; border-radius: var(--radius-md); display: none; font-size: 0.95rem; line-height: 1.6; }
+
+/* Toast & Modal */
+.toast {
+  position: fixed; bottom: 30px; right: 30px; background: var(--accent-cyan); color: #000;
+  padding: 12px 22px; border-radius: var(--radius-md); font-weight: 700; font-size: 0.9rem;
+  box-shadow: var(--shadow-lg); display: flex; align-items: center; gap: 8px;
+  transform: translateY(100px); opacity: 0; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); z-index: 1000;
+}
+.toast.show { transform: translateY(0); opacity: 1; }
+
+.modal-overlay {
+  position: fixed; inset: 0; background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(8px);
+  z-index: 2000; display: flex; align-items: flex-start; justify-content: center; padding-top: 100px;
+  opacity: 0; pointer-events: none; transition: opacity 0.25s ease;
+}
+.modal-overlay.active { opacity: 1; pointer-events: auto; }
+.modal-content {
+  background: var(--bg-surface); border: 1px solid var(--border-color);
+  width: 90%; max-width: 650px; border-radius: var(--radius-lg); box-shadow: var(--shadow-lg);
+  overflow: hidden; transform: translateY(-20px); transition: transform 0.25s ease;
+}
+.modal-overlay.active .modal-content { transform: translateY(0); }
+.search-input-wrapper {
+  padding: 18px 24px; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; gap: 14px;
+}
+.search-input-wrapper input {
+  width: 100%; background: transparent; border: none; outline: none;
+  color: var(--text-main); font-size: 1.1rem; font-family: var(--font-sans);
+}
+.search-results { max-height: 380px; overflow-y: auto; padding: 12px; }
+.search-item {
+  padding: 14px 18px; border-radius: var(--radius-md); text-decoration: none; display: block;
+  transition: background 0.2s;
+}
+.search-item:hover { background: var(--bg-surface-hover); }
+.search-item h4 { color: var(--accent-cyan); font-size: 1rem; margin-bottom: 4px; }
+.search-item p { color: var(--text-muted); font-size: 0.85rem; }
+
+@media (max-width: 992px) {
+  .hero-grid { grid-template-columns: 1fr; gap: 40px; text-align: center; }
+  .hero-buttons { justify-content: center; }
+  .section-header { text-align: center; }
+  .section-desc { margin: 0 auto; }
+  .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+  .nav-links { display: none; }
+}
+</style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+<div class="bg-glow"><div class="glow-1"></div><div class="glow-2"></div></div>
+<div id="toast" class="toast">📋 Copied code to clipboard!</div>
+
+<!-- Navbar -->
+<nav class="navbar">
+  <div class="nav-container">
+    <a href="#" class="brand">
+      <div class="brand-icon">Z</div>
+      <span>Zensus C • I/O</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="zensus_variables_datatypes_attractive.html" title="Variables & Data Types Module">📦 Variables</a></li>
+      <li><a href="zensus_inputs_outputs.html" class="active" title="Inputs & Outputs Module">🖨️ Inputs & Outputs</a></li>
+      <li><a href="zensus_operators_control_flow.html" title="Operators & Control Flow Module">⚡ Operators & Loops</a></li>
+    </ul>
+    <div class="nav-actions">
+      <button class="btn-search" onclick="openSearchModal()">
+        <span>Search</span>
+        <span class="kbd-shortcut">Ctrl K</span>
+      </button>
+      <button class="btn-icon" id="theme-toggle" title="Toggle Theme" onclick="toggleTheme()">
+        🌙
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- Hero Section -->
+<header class="hero">
+  <div class="container hero-grid">
+    <div>
+      <span class="eyebrow">⚡ Zensus • C I/O Masterclass</span>
+      <h1 class="hero-title">Master C <span class="grad-text">Inputs & Outputs</span></h1>
+      <p class="hero-lead">
+        Explore how C handles formatted output with <code>printf()</code>, reads user input with <code>scanf()</code> & <code>fgets()</code>, manages RAM memory addresses, and manipulates terminal buffer streams.
+      </p>
+      <div class="hero-buttons">
+        <a href="#printf-sim" class="btn btn-primary">🚀 Launch printf Playground</a>
+        <a href="#scanf-sim" class="btn btn-secondary">🔍 Inspect scanf Buffers</a>
+      </div>
+      <div class="hero-stats">
+        <div class="stat-item">
+          <span class="stat-num">3</span>
+          <span class="stat-label">Standard Streams</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-num">Real-Time</span>
+          <span class="stat-label">Terminal Simulator</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-num">100%</span>
+          <span class="stat-label">Interactive Playground</span>
+        </div>
+      </div>
+    </div>
+    
+    <div class="code-preview-card">
+      <div class="code-preview-header">
+        <div class="window-dots">
+          <div class="dot dot-red"></div>
+          <div class="dot dot-yellow"></div>
+          <div class="dot dot-green"></div>
+        </div>
+        <span class="code-preview-title">io_demo.c — C Input / Output</span>
+      </div>
+      <div class="code-body">
+<span class="cm">// Formatted Input & Output</span>
+<span class="type-kw">int</span> age;
+<span class="fn">printf</span>(<span class="str">"Enter your age: "</span>);
+<span class="fn">scanf</span>(<span class="str">"%d"</span>, &amp;age);  <span class="cm">// Stores into RAM address &amp;age</span>
+
+<span class="fn">printf</span>(<span class="str">"Padded Output: |%05d|\n"</span>, age);
+<span class="fn">printf</span>(<span class="str">"Hex Output: 0x%X\n"</span>, age);
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- Section 1: Standard I/O Fundamentals -->
+<section id="streams">
+  <div class="container">
+    <div class="section-header">
+      <span class="eyebrow">01 • Stream Architecture</span>
+      <h2 class="section-title">Standard I/O Streams in C</h2>
+      <p class="section-desc">
+        C treats input and output devices as continuous streams of bytes. The C Standard Library (<code>&lt;stdio.h&gt;</code>) automatically connects three streams upon program execution.
+      </p>
+    </div>
+
+    <div class="grid-3">
+      <div class="card">
+        <span class="card-badge">Input Stream</span>
+        <h3>stdin (Keyboard)</h3>
+        <p>Standard input stream (File descriptor <code>0</code>). Reads user keystrokes into an intermediate memory buffer.</p>
+        <div style="margin-top:14px;"><code>scanf("%d", &val);</code></div>
+      </div>
+
+      <div class="card">
+        <span class="card-badge">Output Stream</span>
+        <h3>stdout (Display)</h3>
+        <p>Standard output stream (File descriptor <code>1</code>). Buffered stream that displays text on the monitor screen.</p>
+        <div style="margin-top:14px;"><code>printf("Hello World\n");</code></div>
+      </div>
+
+      <div class="card">
+        <span class="card-badge">Error Stream</span>
+        <h3>stderr (Console)</h3>
+        <p>Standard error stream (File descriptor <code>2</code>). Unbuffered stream used to output immediate diagnostics.</p>
+        <div style="margin-top:14px;"><code>fprintf(stderr, "Error!\n");</code></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Section 2: Live printf Playground (CORE 10/10 FEATURE) -->
+<section id="printf-sim">
+  <div class="container">
+    <div class="section-header">
+      <span class="eyebrow">02 • Visual Simulator</span>
+      <h2 class="section-title">Live <code>printf()</code> Formatting Playground</h2>
+      <p class="section-desc">
+        Experiment with specifiers, field width, precision decimals, zero padding, and alignment flags. Inspect the character-by-character terminal spacing grid in real time.
+      </p>
+    </div>
+
+    <div class="simulator-panel">
+      <div class="sim-controls">
+        <div class="form-group">
+          <label>Format Specifier</label>
+          <select class="form-control" id="pf-spec" onchange="updatePrintfSim()">
+            <option value="d">%d (Integer)</option>
+            <option value="f">%f (Float)</option>
+            <option value="s">%s (String)</option>
+            <option value="x">%x (Hexadecimal)</option>
+            <option value="c">%c (Character)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Flags Modifier</label>
+          <select class="form-control" id="pf-flag" onchange="updatePrintfSim()">
+            <option value="">None</option>
+            <option value="0">0 (Zero-Padded)</option>
+            <option value="-">- (Left-Aligned)</option>
+            <option value="+">+ (Explicit Sign)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Field Width</label>
+          <input type="number" class="form-control" id="pf-width" value="8" min="0" max="20" oninput="updatePrintfSim()">
+        </div>
+
+        <div class="form-group">
+          <label>Precision (.N)</label>
+          <input type="number" class="form-control" id="pf-prec" value="2" min="0" max="10" oninput="updatePrintfSim()">
+        </div>
+
+        <div class="form-group">
+          <label>Input Value</label>
+          <input type="text" class="form-control" id="pf-val" value="42.5" oninput="updatePrintfSim()">
+        </div>
+      </div>
+
+      <!-- Generated C Code Box -->
+      <div style="background:var(--code-bg); padding:16px; border-radius:var(--radius-md); border:1px solid var(--border-color); font-family:var(--font-mono); font-size:1.1rem;">
+        <span class="fn">printf</span>(<span class="str">"Result: |<span id="pf-generated-fmt" style="color:var(--accent-amber);">%08.2f</span>|\n"</span>, <span id="pf-generated-arg" style="color:var(--accent-cyan);">42.5</span>);
+      </div>
+
+      <!-- Real Console Output Box -->
+      <div class="terminal-box">
+        <div class="terminal-header">
+          <span>Terminal Display Output</span>
+          <span id="pf-char-count">10 Characters</span>
+        </div>
+        <div id="pf-term-output" style="font-size:1.3rem; letter-spacing:2px; font-weight:800;">Result: |0000042.50|</div>
+        
+        <!-- Character Boundary Visual Grid -->
+        <div style="margin-top:14px; font-size:0.75rem; color:var(--text-dim); text-transform:uppercase;">Character Cell Boundaries</div>
+        <div class="char-boundary-grid" id="char-grid">
+          <!-- Dynamically generated by JS -->
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Section 3: Live scanf & Address Visualizer -->
+<section id="scanf-sim">
+  <div class="container">
+    <div class="section-header">
+      <span class="eyebrow">03 • Address & Pointer Concept</span>
+      <h2 class="section-title"><code>scanf()</code> Address & Buffer Visualizer</h2>
+      <p class="section-desc">
+        <code>scanf()</code> requires the <b>Address-Of operator (<code>&amp;</code>)</b> to pass the RAM memory location where the converted input will be written.
+      </p>
+    </div>
+
+    <div class="simulator-panel">
+      <div class="sim-controls">
+        <div class="form-group">
+          <label>Select Scenario</label>
+          <select class="form-control" id="scanf-scenario" onchange="updateScanfSim()">
+            <option value="valid">✅ Valid Address (&age)</option>
+            <option value="missing_amp">❌ Missing &amp; Operator (Crash / Bug)</option>
+            <option value="newline_bug">⚠️ Leftover Newline Gotcha (\n in stdin)</option>
+            <option value="space_fix">✅ Space Fix (" %c" Consumes Whitespace)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="cast-flow">
+        <div class="cast-box">
+          <span style="color:var(--text-dim); font-size:0.8rem; font-weight:700;">USER KEYSTROKES (stdin)</span>
+          <div style="font-family:var(--font-mono); font-size:1.2rem; margin-top:6px; color:var(--accent-cyan);" id="scanf-input-view">
+            "25\n"
+          </div>
+        </div>
+
+        <div class="cast-arrow">➔ [scanf Parse] ➔</div>
+
+        <div class="cast-box">
+          <span style="color:var(--text-dim); font-size:0.8rem; font-weight:700;">RAM MEMORY (0x7FFF5FBFF000)</span>
+          <div style="font-family:var(--font-mono); font-size:1.3rem; font-weight:800; color:var(--accent-amber); margin-top:6px;" id="scanf-ram-view">
+            age = 25
+          </div>
+        </div>
+      </div>
+
+      <div id="scanf-explanation" style="margin-top:20px; padding:16px; border-radius:var(--radius-md); background:rgba(52, 211, 153, 0.15); border:1px solid rgba(52, 211, 153, 0.3); color:var(--accent-emerald); font-size:0.95rem;">
+        ✅ <b>Valid Syntax:</b> <code>scanf("%d", &age);</code> successfully passes the address <code>0x7FFF5FBFF000</code> and writes <code>25</code> into RAM.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Section 4: Escape Sequences Playground -->
+<section id="escapes">
+  <div class="container">
+    <div class="section-header">
+      <span class="eyebrow">04 • Character Controls</span>
+      <h2 class="section-title">Escape Sequences Playground</h2>
+      <p class="section-desc">
+        Escape sequences start with a backslash (<code>\</code>) to control formatting, tabs, line breaks, or trigger audio signals.
+      </p>
+    </div>
+
+    <div class="grid-4" style="margin-bottom:30px;">
+      <button class="btn btn-secondary" onclick="triggerEscape('\\n', 'Hello\\nWorld')"><code>\n</code> Newline</button>
+      <button class="btn btn-secondary" onclick="triggerEscape('\\t', 'Name:\\tAlice')"><code>\t</code> Horizontal Tab</button>
+      <button class="btn btn-secondary" onclick="triggerEscape('\\\\', 'C:\\\\Program Files')"><code>\\</code> Backslash</button>
+      <button class="btn btn-secondary" onclick="triggerEscape('\\\"', 'He said \\\"Hi\\\"')"><code>\"</code> Double Quote</button>
+      <button class="btn btn-secondary" onclick="triggerEscape('\\r', 'Over\\rWritten')"><code>\r</code> Carriage Return</button>
+      <button class="btn btn-secondary" onclick="triggerEscape('\\b', 'ABC\\bD')"><code>\b</code> Backspace</button>
+      <button class="btn btn-secondary" onclick="triggerEscape('\\a', 'ALERT!')"><code>\a</code> Bell (Sound 🔔)</button>
+      <button class="btn btn-secondary" onclick="triggerEscape('\\\'', 'It\\\'s C')"><code>\'</code> Single Quote</button>
+    </div>
+
+    <div class="simulator-panel">
+      <div style="font-family:var(--font-mono); font-size:1.1rem; margin-bottom:12px;">
+        <span class="fn">printf</span>(<span class="str">"<span id="esc-code-preview">Hello\nWorld</span>"</span>);
+      </div>
+      <div class="terminal-box" id="esc-term-output" style="min-height:90px; white-space:pre-wrap;">Hello
+World</div>
+    </div>
+  </div>
+</section>
+
+<!-- Section 5: Pipeline Flowchart -->
+<section id="flowcharts">
+  <div class="container">
+    <div class="section-header">
+      <span class="eyebrow">05 • Architecture Pipeline</span>
+      <h2 class="section-title">C I/O Data Stream Pipeline Flowchart</h2>
+      <p class="section-desc">
+        Visual flowchart tracking the lifecycle of user keystrokes from physical keyboard through kernel buffers to display terminal output.
+      </p>
+    </div>
+
+    <div class="chart-container">
+      <div class="chart-title">
+        <span>🔄 Flowchart: Keystroke to Screen Display Pipeline</span>
+      </div>
+      <p class="chart-subtitle">Input Stream (stdin) $\rightarrow$ C Memory $\rightarrow$ Output Stream (stdout).</p>
+
+      <svg class="svg-flowchart" viewBox="0 0 900 240">
+        <g><rect class="svg-node" x="20" y="80" width="160" height="70"/><text class="svg-text-title" x="100" y="115">Keyboard</text><text class="svg-text-sub" x="100" y="135">User Typing</text></g>
+        <path class="svg-line" d="M 180 115 L 230 115"/>
+
+        <g><rect class="svg-node accent" x="230" y="80" width="160" height="70"/><text class="svg-text-title" x="310" y="115">stdin Buffer</text><text class="svg-text-sub" x="310" y="135">Kernel Stream</text></g>
+        <path class="svg-line" d="M 390 115 L 440 115"/>
+
+        <g><rect class="svg-node" x="440" y="80" width="160" height="70"/><text class="svg-text-title" x="520" y="115">scanf / RAM</text><text class="svg-text-sub" x="520" y="135">&var Address</text></g>
+        <path class="svg-line" d="M 600 115 L 650 115"/>
+
+        <g><rect class="svg-node accent" x="650" y="80" width="160" height="70"/><text class="svg-text-title" x="730" y="115">stdout / Screen</text><text class="svg-text-sub" x="730" y="135">printf Output</text></g>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- Section 6: C I/O Code Generator -->
+<section id="builder">
+  <div class="container">
+    <div class="section-header">
+      <span class="eyebrow">06 • Snippet Generator</span>
+      <h2 class="section-title">C I/O Snippet Code Generator</h2>
+      <p class="section-desc">
+        Construct safe, production-grade C input/output code blocks with format specifiers and variable pointers.
+      </p>
+    </div>
+
+    <div class="simulator-panel">
+      <div class="sim-controls">
+        <div class="form-group">
+          <label>I/O Function</label>
+          <select class="form-control" id="gen-fn" onchange="updateGenerator()">
+            <option value="printf">printf() (Formatted Print)</option>
+            <option value="scanf">scanf() (Formatted Input)</option>
+            <option value="fgets">fgets() (Safe String Input)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Data Type</label>
+          <select class="form-control" id="gen-type" onchange="updateGenerator()">
+            <option value="int">int</option>
+            <option value="float">float</option>
+            <option value="double">double</option>
+            <option value="char">char</option>
+            <option value="string">char[] (String)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Variable Identifier</label>
+          <input type="text" class="form-control" id="gen-var" value="itemCount" oninput="updateGenerator()">
+        </div>
+      </div>
+
+      <div style="background:var(--code-bg); padding:24px; border-radius:var(--radius-md); border:1px solid var(--border-color); font-family:var(--font-mono); font-size:1.1rem; position:relative;">
+        <pre id="gen-output-code" style="color:#e2e8f0;">printf("Value: %d\n", itemCount);</pre>
+        <button class="btn btn-secondary" style="position:absolute; top:18px; right:18px; padding:6px 14px; font-size:0.8rem;" onclick="copyCode(document.getElementById('gen-output-code').innerText)">Copy Snippet</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Section 7: Format Specifier Matrix -->
+<section id="matrix">
+  <div class="container">
+    <div class="section-header">
+      <span class="eyebrow">07 • Specifiers Reference</span>
+      <h2 class="section-title">C Format Specifier Matrix</h2>
+      <p class="section-desc">
+        Complete reference table for standard C format specifiers and escape characters.
+      </p>
+    </div>
+
+    <div style="margin-bottom: 20px;">
+      <input type="text" class="form-control" id="table-search" placeholder="🔍 Search specifier (e.g. %d, %s, %p, \n)..." oninput="filterTable()" style="max-width: 400px;">
+    </div>
+
+    <div class="table-wrapper">
+      <table id="matrix-table">
+        <thead>
+          <tr>
+            <th>Specifier / Sequence</th>
+            <th>Type / Meaning</th>
+            <th>Sample Code</th>
+            <th>Output</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><code>%d</code> or <code>%i</code></td><td>Signed Integer</td><td><code>printf("%d", 42);</code></td><td>42</td><td><button class="btn-secondary" style="padding:4px 10px; font-size:0.75rem;" onclick="copyCode('printf(\"%d\", 42);')">Copy</button></td></tr>
+          <tr><td><code>%f</code></td><td>Float Decimal</td><td><code>printf("%.2f", 3.14f);</code></td><td>3.14</td><td><button class="btn-secondary" style="padding:4px 10px; font-size:0.75rem;" onclick="copyCode('printf(\"%.2f\", 3.14f);')">Copy</button></td></tr>
+          <tr><td><code>%lf</code></td><td>Double Precision</td><td><code>printf("%.4lf", 3.14159);</code></td><td>3.1416</td><td><button class="btn-secondary" style="padding:4px 10px; font-size:0.75rem;" onclick="copyCode('printf(\"%.4lf\", 3.14159);')">Copy</button></td></tr>
+          <tr><td><code>%c</code></td><td>Single Character</td><td><code>printf("%c", 'A');</code></td><td>A</td><td><button class="btn-secondary" style="padding:4px 10px; font-size:0.75rem;" onclick="copyCode('printf(\"%c\", \'A\');')">Copy</button></td></tr>
+          <tr><td><code>%s</code></td><td>Null-terminated String</td><td><code>printf("%s", "Zensus");</code></td><td>Zensus</td><td><button class="btn-secondary" style="padding:4px 10px; font-size:0.75rem;" onclick="copyCode('printf(\"%s\", \"Zensus\");')">Copy</button></td></tr>
+          <tr><td><code>%x</code> / <code>%X</code></td><td>Hexadecimal Integer</td><td><code>printf("0x%X", 255);</code></td><td>0xFF</td><td><button class="btn-secondary" style="padding:4px 10px; font-size:0.75rem;" onclick="copyCode('printf(\"0x%X\", 255);')">Copy</button></td></tr>
+          <tr><td><code>%p</code></td><td>Pointer RAM Address</td><td><code>printf("%p", (void*)&var);</code></td><td>0x7fff5fbff000</td><td><button class="btn-secondary" style="padding:4px 10px; font-size:0.75rem;" onclick="copyCode('printf(\"%p\", (void*)&var);')">Copy</button></td></tr>
+          <tr><td><code>\n</code></td><td>Newline Break</td><td><code>printf("A\nB");</code></td><td>A<br>B</td><td><button class="btn-secondary" style="padding:4px 10px; font-size:0.75rem;" onclick="copyCode('printf(\"A\\nB\");')">Copy</button></td></tr>
+          <tr><td><code>\t</code></td><td>Horizontal Tab Space</td><td><code>printf("A\tB");</code></td><td>A   B</td><td><button class="btn-secondary" style="padding:4px 10px; font-size:0.75rem;" onclick="copyCode('printf(\"A\\tB\");')">Copy</button></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- Section 8: Practice Flashcards & Quiz -->
+<section id="quiz">
+  <div class="container">
+    <div class="section-header">
+      <span class="eyebrow">08 • Practice Sandbox</span>
+      <h2 class="section-title">Test Your Understanding</h2>
+      <p class="section-desc">
+        Flip flashcards or complete the 5-question test to master C input/output mechanics.
+      </p>
+    </div>
+
+    <!-- Flashcards Grid -->
+    <h3 style="margin-bottom:20px;">💡 Quick Revision Flashcards (Click to flip)</h3>
+    <div class="grid-3" style="margin-bottom: 50px;">
+      <div class="flashcard" onclick="this.classList.toggle('flipped')">
+        <div class="flashcard-inner">
+          <div class="flashcard-front">
+            <h4>Why does <code>scanf("%d", &var)</code> need <code>&</code>?</h4>
+            <p style="font-size:0.8rem; color:var(--text-dim); margin-top:10px;">Click to Reveal</p>
+          </div>
+          <div class="flashcard-back">
+            <h4 style="color:var(--accent-cyan);">📍 RAM Address Pointer</h4>
+            <p style="font-size:0.9rem; margin-top:8px;"><code>scanf</code> needs the memory address to store the user's input directly into the variable's RAM cell.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="flashcard" onclick="this.classList.toggle('flipped')">
+        <div class="flashcard-inner">
+          <div class="flashcard-front">
+            <h4>Why is <code>gets()</code> dangerous in C?</h4>
+            <p style="font-size:0.8rem; color:var(--text-dim); margin-top:10px;">Click to Reveal</p>
+          </div>
+          <div class="flashcard-back">
+            <h4 style="color:var(--accent-rose);">⚠️ Buffer Overflow</h4>
+            <p style="font-size:0.9rem; margin-top:8px;"><code>gets()</code> lacks length bounds, risking memory corruption. Always use <code>fgets()</code> instead.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="flashcard" onclick="this.classList.toggle('flipped')">
+        <div class="flashcard-inner">
+          <div class="flashcard-front">
+            <h4>What does <code>printf()</code> return?</h4>
+            <p style="font-size:0.8rem; color:var(--text-dim); margin-top:10px;">Click to Reveal</p>
+          </div>
+          <div class="flashcard-back">
+            <h4 style="color:var(--accent-amber);">🔢 Total Characters Printed</h4>
+            <p style="font-size:0.9rem; margin-top:8px;"><code>printf()</code> returns the count of characters successfully written to stdout, or a negative value on error.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quiz -->
+    <div class="quiz-card">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+        <h3 id="quiz-question-num">Question 1 of 5</h3>
+        <span class="card-badge" id="quiz-score">Score: 0</span>
+      </div>
+
+      <h4 id="quiz-question-text" style="font-size:1.2rem; font-weight:700; margin-bottom:16px;">
+        Which function is safest for reading user strings with spaces?
+      </h4>
+
+      <div id="quiz-options">
+        <!-- JS Rendered -->
+      </div>
+
+      <div id="quiz-feedback" class="quiz-feedback"></div>
+      <button class="btn btn-primary" id="btn-next-quiz" style="margin-top:20px; display:none;" onclick="nextQuestion()">Next Question ➔</button>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer style="padding:40px 0; border-top:1px solid var(--border-color); text-align:center; color:var(--text-muted); font-size:0.9rem;">
+  <div class="container">
+    <p><b>Zensus C Platform</b> • Built for modern visual learners.</p>
+  </div>
+</footer>
+
+<!-- Search Modal -->
+<div id="search-modal" class="modal-overlay" onclick="closeSearchModal(event)">
+  <div class="modal-content" onclick="event.stopPropagation()">
+    <div class="search-input-wrapper">
+      <span>🔍</span>
+      <input type="text" id="modal-search-input" placeholder="Search printf, scanf, escape sequences, buffers..." oninput="onSearchModalInput()">
+    </div>
+    <div class="search-results" id="modal-search-results">
+      <!-- Search Items -->
+    </div>
+  </div>
+</div>
+
+<script>
+// --- Progress Bar & Active Link Highlighting ---
+window.addEventListener('scroll', () => {
+  const winScroll = document.documentElement.scrollTop;
+  const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+  const scrolled = height > 0 ? (winScroll / height) * 100 : 0;
+  document.getElementById('progress-bar').style.width = scrolled + '%';
+
+  const sections = document.querySelectorAll('section');
+  const navLinks = document.querySelectorAll('.nav-links a');
+  let currentSec = '';
+
+  sections.forEach(sec => {
+    const top = sec.offsetTop - 120;
+    if(winScroll >= top) { currentSec = sec.getAttribute('id'); }
+  });
+
+  navLinks.forEach(link => {
+    link.classList.remove('active');
+    if(link.getAttribute('href') === '#' + currentSec) {
+      link.classList.add('active');
+    }
+  });
+});
+
+// --- Theme Toggle ---
+function toggleTheme() {
+  const html = document.documentElement;
+  const current = html.getAttribute('data-theme');
+  const next = current === 'dark' ? 'light' : 'dark';
+  html.setAttribute('data-theme', next);
+  document.getElementById('theme-toggle').innerText = next === 'dark' ? '🌙' : '☀️';
+}
+
+// --- Copy Code Toast ---
+function copyCode(text) {
+  if(navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text);
+  } else {
+    const textarea = document.createElement('textarea');
+    textarea.value = text;
+    document.body.appendChild(textarea);
+    textarea.select();
+    document.execCommand('copy');
+    document.body.removeChild(textarea);
+  }
+  const toast = document.getElementById('toast');
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 2000);
+}
+
+// --- Live printf Simulator Logic (CORE FEATURE) ---
+function updatePrintfSim() {
+  const spec = document.getElementById('pf-spec').value;
+  const flag = document.getElementById('pf-flag').value;
+  const width = parseInt(document.getElementById('pf-width').value) || 0;
+  const prec = parseInt(document.getElementById('pf-prec').value) || 0;
+  const rawVal = document.getElementById('pf-val').value;
+
+  let fmtStr = '%';
+  if(flag) fmtStr += flag;
+  if(width > 0) fmtStr += width;
+  if(prec > 0 && (spec === 'f' || spec === 's')) fmtStr += '.' + prec;
+  fmtStr += spec;
+
+  document.getElementById('pf-generated-fmt').innerText = fmtStr;
+  document.getElementById('pf-generated-arg').innerText = rawVal;
+
+  let formatted = '';
+  let numVal = parseFloat(rawVal) || 0;
+
+  if(spec === 'd') {
+    formatted = Math.trunc(numVal).toString();
+    if(flag === '+' && numVal >= 0) formatted = '+' + formatted;
+  } else if(spec === 'f') {
+    formatted = numVal.toFixed(prec > 0 ? prec : 2);
+    if(flag === '+' && numVal >= 0) formatted = '+' + formatted;
+  } else if(spec === 's') {
+    formatted = prec > 0 ? rawVal.substring(0, prec) : rawVal;
+  } else if(spec === 'x') {
+    formatted = Math.abs(Math.trunc(numVal)).toString(16).toUpperCase();
+  } else if(spec === 'c') {
+    formatted = rawVal.length > 0 ? rawVal.charAt(0) : 'A';
+  }
+
+  if(width > formatted.length) {
+    const padLen = width - formatted.length;
+    if(flag === '-') {
+      formatted = formatted + ' '.repeat(padLen);
+    } else if(flag === '0' && spec !== 's' && spec !== 'c') {
+      if(formatted.startsWith('+') || formatted.startsWith('-')) {
+        formatted = formatted.charAt(0) + '0'.repeat(padLen) + formatted.substring(1);
+      } else {
+        formatted = '0'.repeat(padLen) + formatted;
+      }
+    } else {
+      formatted = ' '.repeat(padLen) + formatted;
+    }
+  }
+
+  const termText = 'Result: |' + formatted + '|';
+  document.getElementById('pf-term-output').innerText = termText;
+  document.getElementById('pf-char-count').innerText = `${termText.length} Characters`;
+
+  const grid = document.getElementById('char-grid');
+  grid.innerHTML = '';
+  for(let i = 0; i < termText.length; i++) {
+    const ch = termText.charAt(i);
+    const cell = document.createElement('div');
+    cell.className = 'char-cell' + (ch === ' ' ? ' space-cell' : '');
+    cell.innerText = ch === ' ' ? '␣' : ch;
+    grid.appendChild(cell);
+  }
+}
+
+// --- Live scanf Visualizer Logic ---
+function updateScanfSim() {
+  const scenario = document.getElementById('scanf-scenario').value;
+  const inputView = document.getElementById('scanf-input-view');
+  const ramView = document.getElementById('scanf-ram-view');
+  const expBox = document.getElementById('scanf-explanation');
+
+  if(scenario === 'valid') {
+    inputView.innerText = '"25\\n"';
+    ramView.innerText = 'age = 25';
+    ramView.style.color = 'var(--accent-amber)';
+    expBox.style.background = 'rgba(52, 211, 153, 0.15)';
+    expBox.style.color = 'var(--accent-emerald)';
+    expBox.innerHTML = '✅ <b>Valid Syntax:</b> <code>scanf("%d", &age);</code> successfully passes address <code>0x7FFF5FBFF000</code> and writes <code>25</code> into RAM.';
+  } else if(scenario === 'missing_amp') {
+    inputView.innerText = '"25\\n"';
+    ramView.innerText = 'CRASH / Segmentation Fault';
+    ramView.style.color = 'var(--accent-rose)';
+    expBox.style.background = 'rgba(244, 63, 94, 0.15)';
+    expBox.style.color = 'var(--accent-rose)';
+    expBox.innerHTML = '❌ <b>Bug (Missing &):</b> <code>scanf("%d", age);</code> passes the uninitialized value of <code>age</code> as a raw pointer address, causing a crash!';
+  } else if(scenario === 'newline_bug') {
+    inputView.innerText = '"\\n" (Leftover from previous scanf)';
+    ramView.innerText = 'grade = \'\\n\' (Skipped input!)';
+    ramView.style.color = 'var(--accent-amber)';
+    expBox.style.background = 'rgba(251, 191, 36, 0.15)';
+    expBox.style.color = 'var(--accent-amber)';
+    expBox.innerHTML = '⚠️ <b>Buffer Gotcha:</b> <code>scanf("%c", &grade);</code> reads the leftover <code>\\n</code> newline key from the previous input instead of waiting for a new key.';
+  } else if(scenario === 'space_fix') {
+    inputView.innerText = '" A\\n"';
+    ramView.innerText = 'grade = \'A\'';
+    ramView.style.color = 'var(--accent-amber)';
+    expBox.style.background = 'rgba(52, 211, 153, 0.15)';
+    expBox.style.color = 'var(--accent-emerald)';
+    expBox.innerHTML = '✅ <b>Fixed Syntax:</b> <code>scanf(" %c", &grade);</code> leading space instructs C to discard all leading whitespace and <code>\\n</code> before reading the char!';
+  }
+}
+
+// --- Escape Sequence Sound & Playground ---
+function triggerEscape(seq, preview) {
+  document.getElementById('esc-code-preview').innerText = preview;
+  const term = document.getElementById('esc-term-output');
+
+  if(seq === '\\n') term.innerText = 'Hello\nWorld';
+  else if(seq === '\\t') term.innerText = 'Name:\tAlice\tScore:\t100';
+  else if(seq === '\\\\') term.innerText = 'C:\\Program Files\\Code';
+  else if(seq === '\\\"') term.innerText = 'He said "Hi"';
+  else if(seq === '\\\'') term.innerText = 'It\'s C Programming';
+  else if(seq === '\\r') term.innerText = 'Overwritten Text';
+  else if(seq === '\\b') term.innerText = 'AB D';
+  else if(seq === '\\a') {
+    term.innerText = '🔔 [ALERT BELL AUDIO TRIGGERED]';
+    playBellSound();
+  }
+}
+
+function playBellSound() {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(880, ctx.currentTime);
+    gain.gain.setValueAtTime(0.3, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.5);
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start();
+    osc.stop(ctx.currentTime + 0.5);
+  } catch(e) { console.log('Web Audio disabled'); }
+}
+
+// --- Code Snippet Generator Logic ---
+function updateGenerator() {
+  const fn = document.getElementById('gen-fn').value;
+  const type = document.getElementById('gen-type').value;
+  const v = document.getElementById('gen-var').value.trim() || 'myVar';
+  const out = document.getElementById('gen-output-code');
+
+  if(fn === 'printf') {
+    if(type === 'int') out.innerText = `printf("Value: %d\\n", ${v});`;
+    else if(type === 'float') out.innerText = `printf("Float: %.2f\\n", ${v});`;
+    else if(type === 'double') out.innerText = `printf("Double: %.4lf\\n", ${v});`;
+    else if(type === 'char') out.innerText = `printf("Char: %c\\n", ${v});`;
+    else if(type === 'string') out.innerText = `printf("Text: %s\\n", ${v});`;
+  } else if(fn === 'scanf') {
+    if(type === 'int') out.innerText = `printf("Enter int: ");\nscanf("%d", &${v});`;
+    else if(type === 'float') out.innerText = `printf("Enter float: ");\nscanf("%f", &${v});`;
+    else if(type === 'double') out.innerText = `printf("Enter double: ");\nscanf("%lf", &${v});`;
+    else if(type === 'char') out.innerText = `printf("Enter char: ");\nscanf(" %c", &${v}); // Leading space ignores newline`;
+    else if(type === 'string') out.innerText = `printf("Enter word: ");\nscanf("%19s", ${v}); // No & needed for arrays!`;
+  } else if(fn === 'fgets') {
+    out.innerText = `printf("Enter full line: ");\nfgets(${v}, sizeof(${v}), stdin);\n// Safe string input! Removes buffer overflow risk.`;
+  }
+}
+
+// --- Table Filter ---
+function filterTable() {
+  const q = document.getElementById('table-search').value.toLowerCase();
+  const rows = document.querySelectorAll('#matrix-table tbody tr');
+  rows.forEach(r => {
+    r.style.display = r.innerText.toLowerCase().includes(q) ? '' : 'none';
+  });
+}
+
+// --- Quiz Sandbox Logic ---
+const quizData = [
+  {
+    q: "Which function is safest for reading full string lines with spaces?",
+    opts: ["gets()", "scanf('%s')", "fgets()", "getchar()"],
+    ans: 2,
+    exp: "fgets() prevents buffer overflow by allowing you to specify maximum buffer size."
+  },
+  {
+    q: "Why is the & operator required in scanf('%d', &age)?",
+    opts: ["To convert age to integer", "To pass age's RAM memory address", "To calculate size", "To clear screen"],
+    ans: 1,
+    exp: "scanf needs the RAM address to write the parsed input value into the variable."
+  },
+  {
+    q: "What does printf() return?",
+    opts: ["0 on success", "Total characters printed", "Void", "Address of output"],
+    ans: 1,
+    exp: "printf() returns the integer count of characters successfully written to stdout."
+  },
+  {
+    q: "How do you prevent scanf('%c') from consuming a leftover '\\n' newline?",
+    opts: ["Use scanf('\\n%c')", "Use scanf(' %c')", "Use fflush(stdin)", "Use %d"],
+    ans: 1,
+    exp: "Adding a leading space before %c instructs scanf to discard any leading whitespace and newlines."
+  },
+  {
+    q: "Which escape sequence triggers an alert bell / sound in C?",
+    opts: ["\\b", "\\a", "\\r", "\\v"],
+    ans: 1,
+    exp: "\\a represents the ASCII Alert Bell character."
+  }
+];
+
+let currentQ = 0;
+let score = 0;
+
+function loadQuizQuestion() {
+  const q = quizData[currentQ];
+  document.getElementById('quiz-question-num').innerText = `Question ${currentQ + 1} of ${quizData.length}`;
+  document.getElementById('quiz-question-text').innerText = q.q;
+  
+  const optsContainer = document.getElementById('quiz-options');
+  optsContainer.innerHTML = '';
+
+  q.opts.forEach((opt, idx) => {
+    const div = document.createElement('div');
+    div.className = 'quiz-option';
+    div.innerHTML = `<span>${opt}</span>`;
+    div.onclick = () => checkAnswer(idx);
+    optsContainer.appendChild(div);
+  });
+
+  document.getElementById('quiz-feedback').style.display = 'none';
+  document.getElementById('btn-next-quiz').style.display = 'none';
+}
+
+function checkAnswer(selectedIdx) {
+  const q = quizData[currentQ];
+  const opts = document.querySelectorAll('.quiz-option');
+  
+  opts.forEach((opt, idx) => {
+    opt.onclick = null;
+    if(idx === q.ans) opt.classList.add('correct');
+    else if(idx === selectedIdx) opt.classList.add('incorrect');
+  });
+
+  const feedback = document.getElementById('quiz-feedback');
+  feedback.style.display = 'block';
+
+  if(selectedIdx === q.ans) {
+    score++;
+    document.getElementById('quiz-score').innerText = `Score: ${score}`;
+    feedback.style.background = 'rgba(52, 211, 153, 0.15)';
+    feedback.style.color = 'var(--accent-emerald)';
+    feedback.innerHTML = `✅ <b>Correct!</b> ${q.exp}`;
+  } else {
+    feedback.style.background = 'rgba(244, 63, 94, 0.15)';
+    feedback.style.color = 'var(--accent-rose)';
+    feedback.innerHTML = `❌ <b>Incorrect.</b> ${q.exp}`;
+  }
+
+  document.getElementById('btn-next-quiz').style.display = 'inline-flex';
+}
+
+function nextQuestion() {
+  currentQ++;
+  if(currentQ < quizData.length) {
+    loadQuizQuestion();
+  } else {
+    document.getElementById('quiz-question-num').innerText = 'Quiz Complete!';
+    document.getElementById('quiz-question-text').innerText = `🎉 You scored ${score} out of ${quizData.length}!`;
+    document.getElementById('quiz-options').innerHTML = '';
+    document.getElementById('quiz-feedback').style.display = 'none';
+    document.getElementById('btn-next-quiz').innerText = 'Restart Quiz';
+    document.getElementById('btn-next-quiz').onclick = () => {
+      currentQ = 0; score = 0;
+      document.getElementById('quiz-score').innerText = 'Score: 0';
+      loadQuizQuestion();
+    };
+  }
+}
+
+// --- Search Modal Index & Search Logic ---
+const searchIndex = [
+  { title: "Standard I/O Streams", desc: "stdin, stdout, stderr and C streams explained.", link: "#streams" },
+  { title: "printf() Visual Playground", desc: "Field width, precision decimals, zero padding & terminal grid.", link: "#printf-sim" },
+  { title: "scanf() Address & Buffers", desc: "& operator pointers and leftover \\n newline handling.", link: "#scanf-sim" },
+  { title: "Escape Sequences Playground", desc: "\\n, \\t, \\\\, \\\", \\r, \\b, and \\a audio bell.", link: "#escapes" },
+  { title: "C I/O Pipeline Flowchart", desc: "Keystrokes to display terminal architecture diagram.", link: "#flowcharts" },
+  { title: "C I/O Snippet Generator", desc: "Production code builder for printf, scanf, and fgets.", link: "#builder" },
+  { title: "Format Specifier Matrix", desc: "Complete reference table for %d, %f, %s, %p specifiers.", link: "#matrix" },
+  { title: "I/O Practice & Quiz", desc: "5-question self-assessment test and flashcards.", link: "#quiz" }
+];
+
+function openSearchModal() {
+  document.getElementById('search-modal').classList.add('active');
+  const input = document.getElementById('modal-search-input');
+  input.value = ''; input.focus();
+  renderSearchResults(searchIndex);
+}
+
+function closeSearchModal(e) {
+  if(e && e.stopPropagation) e.stopPropagation();
+  document.getElementById('search-modal').classList.remove('active');
+}
+
+function onSearchModalInput() {
+  const query = document.getElementById('modal-search-input').value.toLowerCase().trim();
+  if(!query) { renderSearchResults(searchIndex); return; }
+  const filtered = searchIndex.filter(item => 
+    item.title.toLowerCase().includes(query) || item.desc.toLowerCase().includes(query)
+  );
+  renderSearchResults(filtered);
+}
+
+function renderSearchResults(items) {
+  const container = document.getElementById('modal-search-results');
+  if(items.length === 0) {
+    container.innerHTML = '<div style="padding:20px; text-align:center; color:var(--text-muted);">No matching topics found.</div>';
+    return;
+  }
+  container.innerHTML = items.map(item => `
+    <a href="${item.link}" class="search-item" onclick="closeSearchModal(event)">
+      <h4>${item.title}</h4>
+      <p>${item.desc}</p>
+    </a>
+  `).join('');
+}
+
+window.addEventListener('keydown', (e) => {
+  if((e.ctrlKey || e.metaKey) && e.key === 'k') {
+    e.preventDefault(); openSearchModal();
+  } else if(e.key === 'Escape') {
+    closeSearchModal();
+  }
+});
+
+window.addEventListener('DOMContentLoaded', () => {
+  updatePrintfSim();
+  updateScanfSim();
+  updateGenerator();
+  loadQuizQuestion();
+  renderSearchResults(searchIndex);
+});
+</script>
+
+</body>
+</html>
+
