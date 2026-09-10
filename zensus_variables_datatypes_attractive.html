@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zensus — C Variables & Data Types — Visual Learning</title>
+<style>
+:root{--bg:#070b16;--panel:#101a30;--text:#eef4ff;--muted:#9baaca;--cyan:#4cc9f0;--purple:#7c5cff;--line:rgba(255,255,255,.09)}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;background:radial-gradient(circle at 15% 0%,rgba(76,201,240,.1),transparent 30%),radial-gradient(circle at 90% 10%,rgba(124,92,255,.12),transparent 30%),var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+a{color:inherit;text-decoration:none}.znav{position:sticky;top:0;z-index:20;background:rgba(7,11,22,.86);backdrop-filter:blur(16px);border-bottom:1px solid var(--line)}
+.znav-inner{max-width:1180px;margin:auto;padding:15px 22px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:900}.brand-mark{display:grid;place-items:center;width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,var(--cyan),var(--purple))}.brand-name{font-size:1.15rem}
+.navlinks{display:flex;gap:18px;flex-wrap:wrap;color:#b8c6e5;font-size:.86rem;font-weight:700}.navlinks a:hover{color:#fff}
+.hero{max-width:1180px;margin:auto;padding:78px 22px 60px}.eyebrow{display:inline-flex;padding:7px 11px;border:1px solid rgba(76,201,240,.22);border-radius:999px;color:#8ee7ff;background:rgba(76,201,240,.08);font-size:.73rem;font-weight:900;letter-spacing:.08em}
+.hero h1{font-size:clamp(2.8rem,6vw,5.5rem);line-height:.98;margin:18px 0;letter-spacing:-.045em}.grad{background:linear-gradient(90deg,var(--cyan),#9d8cff,var(--purple));-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p{max-width:720px;color:var(--muted);font-size:1.12rem;line-height:1.8}.actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:28px}.btn{padding:12px 17px;border-radius:11px;border:1px solid var(--line);font-weight:800;background:var(--panel)}.btn.primary{background:linear-gradient(135deg,var(--cyan),var(--purple));border:0}
+.wrap{max-width:1180px;margin:auto;padding:0 22px}section{padding:55px 0}.title h2{font-size:2rem;margin:0 0 8px}.title h3{font-size:1.5rem;margin:0 0 7px}.title p{margin:0;color:var(--muted);line-height:1.7}
+.vdt-hero{display:grid;grid-template-columns:1.15fr .85fr;gap:18px;margin-top:22px}.vdt-panel,.card{background:linear-gradient(145deg,rgba(16,27,49,.97),rgba(10,17,33,.97));border:1px solid var(--line);border-radius:18px;padding:23px}
+.vdt-panel h3,.card h3{margin-top:0}.vdt-panel p,.card p{color:var(--muted);line-height:1.7}
+.vdt-kicker{display:inline-flex;padding:6px 9px;border-radius:999px;background:rgba(76,201,240,.09);border:1px solid rgba(76,201,240,.2);color:#8ee7ff;font-size:.72rem;font-weight:900;text-transform:uppercase;letter-spacing:.07em}
+.vdt-flow{display:flex;flex-wrap:wrap;align-items:center;gap:9px;margin-top:18px}.vdt-chip{padding:9px 12px;border-radius:10px;background:rgba(124,92,255,.11);border:1px solid rgba(124,92,255,.22);font-weight:800}.vdt-arrow{color:#7183b5;font-weight:900}
+.code{background:#050b16;border:1px solid rgba(126,156,255,.17);border-radius:13px;padding:17px;overflow:auto;margin-top:15px}pre{margin:0;color:#dce7ff;line-height:1.7;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.9rem}.kw{color:#83d7ff}.str{color:#b6efb6}.cm{color:#7182a7}.fn{color:#d7b5ff}
+.vdt-type-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:20px}.vdt-type{padding:20px;border-radius:17px;background:rgba(255,255,255,.025);border:1px solid var(--line)}
+.vdt-type .badge{display:inline-block;padding:5px 8px;border-radius:7px;background:rgba(255,255,255,.06);color:#9eb3df;font-size:.68rem;font-weight:900;text-transform:uppercase}.vdt-type h4{font-size:1.2rem;margin:13px 0 7px}.vdt-type p{font-size:.9rem;color:var(--muted);line-height:1.55;margin:0 0 13px}
+.example{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.8rem;color:#d9e4ff;background:#08111f;padding:10px;border-radius:9px;overflow:auto}.two{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:20px}
+.list{margin:10px 0 0;padding-left:20px;color:var(--muted);line-height:1.9}.note{margin-top:20px;padding:17px 18px;border-left:3px solid var(--cyan);background:rgba(76,201,240,.055);border-radius:0 12px 12px 0;color:#c9d7f7;line-height:1.65}
+.table-wrap{overflow:auto;border:1px solid var(--line);border-radius:16px;margin-top:22px}table{width:100%;border-collapse:collapse;min-width:700px;background:rgba(12,20,38,.75)}th,td{padding:15px 16px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}th{color:#c9d7f7;font-size:.8rem;text-transform:uppercase;letter-spacing:.05em}td{color:var(--muted);line-height:1.55}td:first-child{color:#fff;font-weight:800}
+.quiz{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:22px}.footer{border-top:1px solid var(--line);padding:30px 22px;color:#7182a7;text-align:center}
+@media(max-width:900px){.vdt-hero,.two,.quiz{grid-template-columns:1fr}.vdt-type-grid{grid-template-columns:repeat(2,1fr)}}@media(max-width:560px){.vdt-type-grid{grid-template-columns:1fr}.navlinks{display:none}}
+</style>
+
+<style>
+.visual-panel{margin:24px 0;padding:22px;border:1px solid #dfe5ec;border-radius:18px;background:linear-gradient(145deg,#f8fafc,#eef3f8);overflow:auto}
+.visual-title{font-size:1.05rem;font-weight:800;margin:0 0 6px}
+.visual-caption{color:#64748b;margin:0 0 18px}
+.diagram{min-width:620px;display:flex;justify-content:center}
+.diagram svg{width:100%;max-width:820px;height:auto}
+.box{fill:#fff;stroke:#334155;stroke-width:2}
+.box-accent{fill:#f1f5f9;stroke:#0f172a;stroke-width:2}
+.diagram text{font-family:system-ui,-apple-system,Segoe UI,sans-serif;fill:#0f172a}
+.arrow{stroke:#64748b;stroke-width:2.5;fill:none;marker-end:url(#arrow)}
+.flow-step{cursor:pointer}
+.flow-step rect{transition:.2s}
+.flow-step.active rect{fill:#0f172a;stroke:#0f172a}
+.flow-step.active text{fill:#fff}
+.type-bars{min-width:650px}
+.type-bar{display:flex;align-items:center;gap:12px;margin:12px 0}
+.type-label{width:90px;font-weight:800}
+.type-track{height:24px;background:#dbe3ec;border-radius:8px;flex:1;overflow:hidden}
+.type-fill{height:100%;background:#475569;border-radius:8px}
+.type-note{width:145px;font-family:ui-monospace,monospace;font-size:.85rem}
+.memory-grid{display:grid;grid-template-columns:repeat(8,1fr);gap:5px;min-width:640px}
+.memory-cell{padding:10px 4px;text-align:center;border:1px solid #cbd5e1;background:#fff;border-radius:7px;font-family:ui-monospace,monospace;font-weight:700}
+.diagram-note{margin-top:12px;padding:11px 13px;border-radius:10px;background:#fff;border:1px solid #e2e8f0;color:#475569}
+@media(max-width:700px){.visual-panel{padding:14px}}
+</style>
+
+
+<style>
+/* Zensus premium visual refresh */
+:root{
+  --z-ink:#0b1220;
+  --z-muted:#64748b;
+  --z-line:#dbe4ef;
+  --z-card:rgba(255,255,255,.86);
+  --z-accent:#6d5dfc;
+  --z-accent2:#18b6a4;
+  --z-bg:#f5f7fb;
+}
+body{
+  background:
+    radial-gradient(circle at 8% 4%,rgba(109,93,252,.10),transparent 28rem),
+    radial-gradient(circle at 92% 12%,rgba(24,182,164,.10),transparent 28rem),
+    var(--z-bg);
+}
+body:before{
+  content:"";
+  position:fixed;inset:0;pointer-events:none;opacity:.28;z-index:-1;
+  background-image:radial-gradient(#cbd5e1 .7px,transparent .7px);
+  background-size:22px 22px;
+}
+header,.hero{
+  position:relative;
+  overflow:hidden;
+}
+.hero:after{
+  content:"";
+  position:absolute;width:360px;height:360px;border-radius:50%;
+  right:-100px;top:-130px;
+  background:linear-gradient(135deg,rgba(109,93,252,.22),rgba(24,182,164,.12));
+  filter:blur(3px);
+}
+.section{
+  position:relative;
+}
+.section-label{
+  letter-spacing:.12em;
+  font-weight:900;
+}
+.card,.topic-card,.visual-panel{
+  backdrop-filter:blur(12px);
+}
+.visual-panel{
+  position:relative;
+  border:1px solid rgba(148,163,184,.25)!important;
+  background:linear-gradient(145deg,rgba(255,255,255,.94),rgba(241,245,249,.88))!important;
+  box-shadow:0 18px 45px rgba(15,23,42,.08);
+  transition:transform .25s ease,box-shadow .25s ease;
+}
+.visual-panel:hover{
+  transform:translateY(-3px);
+  box-shadow:0 24px 55px rgba(15,23,42,.12);
+}
+.visual-panel:before{
+  content:"";
+  position:absolute;left:0;top:18px;bottom:18px;width:4px;border-radius:0 8px 8px 0;
+  background:linear-gradient(180deg,var(--z-accent),var(--z-accent2));
+}
+.visual-title{
+  font-size:1.2rem!important;
+  color:var(--z-ink);
+}
+.visual-caption{
+  color:var(--z-muted);
+}
+.diagram svg{
+  filter:drop-shadow(0 8px 12px rgba(15,23,42,.05));
+}
+.box,.box-accent{
+  stroke:#94a3b8!important;
+}
+.box-accent{
+  fill:#f8f7ff!important;
+  stroke:#6d5dfc!important;
+}
+.arrow{
+  stroke:#7c8aa0!important;
+}
+.type-track{
+  background:#e7edf5!important;
+  box-shadow:inset 0 1px 3px rgba(15,23,42,.08);
+}
+.type-fill{
+  background:linear-gradient(90deg,#6d5dfc,#18b6a4)!important;
+}
+.memory-cell{
+  transition:transform .18s,box-shadow .18s;
+}
+.memory-cell:hover{
+  transform:translateY(-3px);
+  box-shadow:0 7px 16px rgba(15,23,42,.12);
+}
+.learning-controls button{
+  background:linear-gradient(135deg,#111827,#334155)!important;
+  box-shadow:0 6px 15px rgba(15,23,42,.16);
+  transition:transform .18s,box-shadow .18s;
+}
+.learning-controls button:hover{
+  transform:translateY(-2px);
+  box-shadow:0 10px 20px rgba(15,23,42,.22);
+}
+.learning-controls button.secondary{
+  background:#fff!important;
+  border:1px solid var(--z-line);
+  color:#111827!important;
+}
+.diagram-note{
+  box-shadow:0 7px 18px rgba(15,23,42,.05);
+}
+.topic-card{
+  position:relative;
+  overflow:hidden;
+  transition:transform .2s,box-shadow .2s;
+}
+.topic-card:after{
+  content:"";
+  position:absolute;right:-30px;bottom:-45px;width:110px;height:110px;border-radius:50%;
+  background:rgba(109,93,252,.07);
+}
+.topic-card:hover{
+  transform:translateY(-4px);
+  box-shadow:0 18px 35px rgba(15,23,42,.10);
+}
+.badge{
+  background:linear-gradient(135deg,#eeecff,#e3faf6)!important;
+  color:#4338ca;
+}
+pre{
+  border:1px solid rgba(148,163,184,.18);
+  box-shadow:0 14px 30px rgba(15,23,42,.09);
+}
+table{
+  box-shadow:0 10px 26px rgba(15,23,42,.06);
+  overflow:hidden;
+  border-radius:12px;
+}
+.flow-step.active rect{
+  fill:linear-gradient(135deg,#6d5dfc,#18b6a4);
+}
+@media(max-width:700px){
+  .visual-panel{margin:18px 0}
+}
+</style>
+
+</head>
+<body>
+<nav class="znav"><div class="znav-inner">
+<a class="brand" href="#"><span class="brand-mark">Z</span><span class="brand-name">Zensus</span></a>
+<div class="navlinks"><a href="#variables">Variables</a><a href="#types">Data Types</a><a href="#declaration">Declaration</a><a href="#conversion">Conversion</a><a href="#visuals">Visuals</a><a href="#practice">Practice</a></div>
+</div></nav>
+
+<header class="hero">
+<span class="eyebrow">ZENSUS • C PROGRAMMING FUNDAMENTALS</span>
+<h1>Variables & <span class="grad">Data Types</span></h1>
+<p>Master one of the most important foundations of C: how values are declared, stored, represented, converted, and used inside a program.</p>
+<div class="actions"><a class="btn primary" href="#variables">Start learning ↓</a><a class="btn" href="#practice">Test yourself</a></div>
+</header>
+
+<div class="zensus-learning-strip" aria-label="Learning roadmap">
+  <div class="zls-item"><span>01</span><b>Understand</b><small>types & variables</small></div>
+  <div class="zls-line"></div>
+  <div class="zls-item"><span>02</span><b>Visualize</b><small>memory & hierarchy</small></div>
+  <div class="zls-line"></div>
+  <div class="zls-item"><span>03</span><b>Practice</b><small>code & conversion</small></div>
+</div>
+<style>
+.zensus-learning-strip{
+  max-width:1100px;margin:24px auto 8px;padding:14px 18px;
+  display:flex;align-items:center;justify-content:center;gap:18px;
+  border:1px solid rgba(148,163,184,.25);border-radius:18px;
+  background:rgba(255,255,255,.72);backdrop-filter:blur(12px);
+  box-shadow:0 12px 30px rgba(15,23,42,.06);
+}
+.zls-item{display:flex;align-items:center;gap:9px;white-space:nowrap}
+.zls-item span{
+  width:30px;height:30px;border-radius:9px;display:grid;place-items:center;
+  background:#111827;color:#fff;font-size:11px;font-weight:900
+}
+.zls-item b{font-size:13px}.zls-item small{color:#64748b}
+.zls-line{height:1px;width:60px;background:#dbe4ef}
+@media(max-width:650px){
+ .zensus-learning-strip{overflow:auto;justify-content:flex-start}
+ .zls-line{min-width:25px}
+ .zls-item{flex-direction:column;align-items:flex-start}
+ .zls-item small{font-size:10px}
+}
+</style>
+
+<div class="zensus-stats">
+  <div><strong>4</strong><span>core types</span></div>
+  <div><strong>7</strong><span>visual lessons</span></div>
+  <div><strong>∞</strong><span>practice values</span></div>
+</div>
+<style>
+.zensus-stats{
+  max-width:900px;margin:8px auto 34px;display:grid;grid-template-columns:repeat(3,1fr);gap:12px
+}
+.zensus-stats div{
+  text-align:center;padding:15px;border-radius:15px;background:rgba(255,255,255,.7);
+  border:1px solid rgba(148,163,184,.2)
+}
+.zensus-stats strong{display:block;font-size:1.55rem}
+.zensus-stats span{font-size:.82rem;color:#64748b}
+@media(max-width:600px){.zensus-stats{grid-template-columns:1fr}}
+</style>
+
+
+<section id="variables"><div class="wrap">
+<div class="title">
+  <h2>4. Variables & Data Types</h2>
+  <p>Understand how C represents information, reserves memory, and gives every value a defined type.</p>
+</div>
+
+<div class="vdt-hero">
+  <div class="vdt-panel">
+    <span class="vdt-kicker">Core concept</span>
+    <h3>What is a variable?</h3>
+    <p>A variable is a named storage location that holds a value while a program runs. In C, you declare the variable with a data type and an identifier, then you can initialize or assign a value to it.</p>
+
+    <div class="vdt-flow">
+      <span class="vdt-chip">Data type</span><span class="vdt-arrow">→</span>
+      <span class="vdt-chip">Variable name</span><span class="vdt-arrow">→</span>
+      <span class="vdt-chip">Value</span>
+    </div>
+
+    <div class="vdt-code"><pre><span class="kw">int</span> age = 21;
+<span class="kw">double</span> salary = 42500.75;
+<span class="kw">char</span> grade = <span class="str">'A'</span>;</pre></div>
+  </div>
+
+  <div class="vdt-panel">
+    <span class="vdt-kicker">Declaration pattern</span>
+    <h3>Read C declarations naturally</h3>
+    <div class="vdt-code"><pre><span class="kw">type</span> variable_name = value;</pre></div>
+    <ul class="vdt-list">
+      <li><code>int</code> tells C the kind of value.</li>
+      <li><code>age</code> is the identifier.</li>
+      <li><code>= 21</code> initializes the variable.</li>
+      <li><code>;</code> ends the declaration statement.</li>
+    </ul>
+    <div class="vdt-note"><b>Professional habit:</b> choose meaningful names such as <code>studentCount</code> or <code>totalMarks</code> instead of vague names such as <code>x</code> and <code>y</code>.</div>
+  </div>
+</div>
+
+<div class="title" style="margin-top:34px"><h3>Fundamental C data types</h3><p>Use the type that matches the data your program needs.</p></div>
+
+<div class="vdt-type-grid">
+  <div class="vdt-type">
+    <span class="badge">Integer</span><h4>int</h4>
+    <p>Stores whole-number values, including positive, negative, and zero.</p>
+    <div class="vdt-example">int count = 100;</div>
+  </div>
+  <div class="vdt-type">
+    <span class="badge">Character</span><h4>char</h4>
+    <p>Stores a single character, written with single quotes.</p>
+    <div class="vdt-example">char grade = 'A';</div>
+  </div>
+  <div class="vdt-type">
+    <span class="badge">Floating point</span><h4>float</h4>
+    <p>Stores floating-point numbers with single-precision representation.</p>
+    <div class="vdt-example">float price = 19.95f;</div>
+  </div>
+  <div class="vdt-type">
+    <span class="badge">Floating point</span><h4>double</h4>
+    <p>Provides greater precision than <code>float</code> on typical implementations.</p>
+    <div class="vdt-example">double pi = 3.1415926535;</div>
+  </div>
+</div>
+
+<div class="vdt-two">
+  <div class="card">
+    <h3>Declaration vs initialization</h3>
+    <p><b>Declaration</b> introduces a variable and its type. <b>Initialization</b> gives it its first value.</p>
+    <div class="code"><pre><span class="kw">int</span> score;        <span class="cm">// declaration</span>
+score = 95;         <span class="cm">// assignment</span>
+
+<span class="kw">int</span> level = 3;     <span class="cm">// declaration + initialization</span></pre></div>
+  </div>
+
+  <div class="card">
+    <h3>Multiple declarations</h3>
+    <p>Variables of the same type can be declared in one statement when that improves readability.</p>
+    <div class="code"><pre><span class="kw">int</span> width = 1280, height = 720;
+<span class="kw">float</span> x = 2.5f, y = 7.0f;</pre></div>
+  </div>
+</div>
+
+<div class="title" style="margin-top:34px"><h3>Choosing a data type</h3><p>Data types affect representation, storage, range, and the operations that make sense for a value.</p></div>
+
+<table class="vdt-table">
+<tr><th>Type</th><th>Best suited for</th><th>Example</th><th>Common printf specifier</th></tr>
+<tr><td><code>char</code></td><td>Single characters / small character values</td><td><code>char initial = 'Z';</code></td><td><code>%c</code></td></tr>
+<tr><td><code>int</code></td><td>Whole-number calculations</td><td><code>int items = 42;</code></td><td><code>%d</code></td></tr>
+<tr><td><code>float</code></td><td>Single-precision decimal calculations</td><td><code>float rate = 4.5f;</code></td><td><code>%f</code></td></tr>
+<tr><td><code>double</code></td><td>Higher-precision decimal calculations</td><td><code>double balance = 1250.75;</code></td><td><code>%f</code></td></tr>
+</table>
+
+<div class="vdt-two">
+  <div class="card">
+    <h3>Type modifiers</h3>
+    <p>C also provides modifiers that can change the range or representation of integer and floating-point types.</p>
+    <div class="code"><pre><span class="kw">short int</span> smallNumber;
+<span class="kw">long int</span> largeNumber;
+<span class="kw">unsigned int</span> positiveCount;
+<span class="kw">long double</span> preciseValue;</pre></div>
+  </div>
+
+  <div class="card">
+    <h3>Check memory with sizeof</h3>
+    <p>The exact size of a type depends on the implementation. Use <code>sizeof</code> when you need the size on the current platform.</p>
+    <div class="code"><pre><span class="fn">printf</span>(<span class="str">"%zu\\n"</span>, <span class="kw">sizeof</span>(<span class="kw">int</span>));
+<span class="fn">printf</span>(<span class="str">"%zu\\n"</span>, <span class="kw">sizeof</span>(<span class="kw">double</span>));</pre></div>
+  </div>
+</div>
+
+<div class="vdt-two">
+  <div class="card">
+    <h3>Variable naming rules</h3>
+    <ul class="vdt-list">
+      <li>Use letters, digits, and underscores.</li>
+      <li>Do not start an identifier with a digit.</li>
+      <li>Spaces and punctuation such as <code>$</code> are not valid identifier characters.</li>
+      <li>C keywords such as <code>int</code> and <code>return</code> cannot be used as variable names.</li>
+      <li>Identifiers are case-sensitive: <code>score</code> and <code>Score</code> are different.</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3>Type conversion</h3>
+    <p>C can convert values between compatible numeric types. Be deliberate when a conversion may lose precision or change a value's representation.</p>
+    <div class="code"><pre><span class="kw">int</span> total = 7;
+<span class="kw">int</span> count = 2;
+
+<span class="kw">double</span> average =
+    (<span class="kw">double</span>) total / count;
+
+<span class="fn">printf</span>(<span class="str">"%.2f\\n"</span>, average);</pre></div>
+  </div>
+</div>
+
+<div class="vdt-note" style="margin-top:24px">
+  <b>Key takeaway:</b> a professional C programmer thinks about both the <i>meaning</i> of a value and its <i>representation</i>. Choose a clear identifier, select an appropriate type, initialize variables deliberately, and use <code>sizeof</code> rather than assuming a universal byte size.
+</div>
+</div></section>
+<section id="declaration"><div class="wrap">
+<div class="title"><h2>Declaration, Initialization & Assignment</h2><p>Three related concepts every C programmer should understand.</p></div>
+<div class="two">
+<div class="card"><h3>01 · Declaration</h3><p>Introduce a variable by specifying its data type and identifier.</p><div class="code"><pre><span class="kw">int</span> score;</pre></div></div>
+<div class="card"><h3>02 · Initialization</h3><p>Give a variable its first value when it is declared.</p><div class="code"><pre><span class="kw">int</span> score = 95;</pre></div></div>
+<div class="card"><h3>03 · Assignment</h3><p>Change the value of an existing variable.</p><div class="code"><pre>score = 100;</pre></div></div>
+<div class="card"><h3>04 · Constants</h3><p>Use <code>const</code> when a value should not be modified through that identifier.</p><div class="code"><pre><span class="kw">const int</span> maxUsers = 100;</pre></div></div>
+</div>
+<div class="note"><b>Professional habit:</b> initialize variables deliberately and choose names that communicate what the value represents.</div>
+</div></section>
+
+<section id="types"><div class="wrap">
+<div class="title"><h2>Data Type Families</h2><p>C provides fundamental types plus derived and user-defined types.</p></div>
+<div class="grid">
+<div class="card"><h3>Fundamental</h3><p><code>char</code>, integer types, <code>float</code>, <code>double</code>, and <code>void</code>.</p></div>
+<div class="card"><h3>Derived</h3><p>Arrays, pointers, and function types are constructed from other types.</p></div>
+<div class="card"><h3>User-defined</h3><p><code>struct</code>, <code>union</code>, <code>enum</code>, and aliases made with <code>typedef</code>.</p></div>
+</div>
+<div class="note"><b>Important:</b> exact type sizes and ranges depend on the C implementation. Use <code>sizeof</code> when the actual size on your target platform matters.</div>
+</div></section>
+
+<section id="conversion"><div class="wrap">
+<div class="title"><h2>Type Conversion</h2><p>Be intentional when different numeric types are used in the same expression.</p></div>
+<div class="two">
+<div class="card"><h3>Implicit conversion</h3><p>C may automatically convert a value during an expression.</p><div class="code"><pre><span class="kw">int</span> items = 7;
+<span class="kw">double</span> total = items + 2.5;</pre></div></div>
+<div class="card"><h3>Explicit conversion</h3><p>A cast explicitly requests a conversion.</p><div class="code"><pre><span class="kw">int</span> total = 7, count = 2;
+<span class="kw">double</span> avg =
+    (<span class="kw">double</span>) total / count;</pre></div></div>
+</div>
+</div></section>
+
+
+<section id="visuals" class="section">
+  <div class="section-label">Visual learning</div>
+  <h2>📐 Visual representations</h2>
+  <p>Use these diagrams to connect the idea of a variable, its data type, its value, and how C stores and converts data.</p>
+
+  <div class="visual-panel">
+    <p class="visual-title">1. Variable → type → value</p>
+    <p class="visual-caption">A variable has a declared type and stores a value of that type.</p>
+    <div class="diagram">
+      <svg viewBox="0 0 820 210" role="img" aria-label="Variable type and value relationship">
+        <defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#64748b"/></marker></defs>
+        <rect class="box-accent" x="35" y="55" width="190" height="100" rx="16"/>
+        <text x="130" y="90" text-anchor="middle" font-size="17" font-weight="800">Data type</text>
+        <text x="130" y="123" text-anchor="middle" font-size="26" font-weight="900">int</text>
+        <rect class="box" x="315" y="55" width="190" height="100" rx="16"/>
+        <text x="410" y="90" text-anchor="middle" font-size="17" font-weight="800">Variable</text>
+        <text x="410" y="123" text-anchor="middle" font-size="26" font-weight="900">age</text>
+        <rect class="box-accent" x="595" y="55" width="190" height="100" rx="16"/>
+        <text x="690" y="90" text-anchor="middle" font-size="17" font-weight="800">Stored value</text>
+        <text x="690" y="123" text-anchor="middle" font-size="26" font-weight="900">21</text>
+        <path class="arrow" d="M225 105 L310 105"/><path class="arrow" d="M505 105 L590 105"/>
+      </svg>
+    </div>
+    <div class="diagram-note"><code>int age = 21;</code> declares an integer variable named <code>age</code> and initializes it with <code>21</code>.</div>
+  </div>
+
+  <div class="visual-panel">
+    <p class="visual-title">2. C data-type hierarchy</p>
+    <p class="visual-caption">A quick map of the major families commonly encountered in C.</p>
+    <div class="diagram">
+      <svg viewBox="0 0 820 360" role="img" aria-label="C data type hierarchy">
+        <defs><marker id="arrow2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#64748b"/></marker></defs>
+        <rect class="box-accent" x="300" y="20" width="220" height="58" rx="14"/><text x="410" y="56" text-anchor="middle" font-size="20" font-weight="900">C Data Types</text>
+        <path class="arrow" marker-end="url(#arrow2)" d="M410 78 L160 125"/><path class="arrow" marker-end="url(#arrow2)" d="M410 78 L410 125"/><path class="arrow" marker-end="url(#arrow2)" d="M410 78 L660 125"/>
+        <rect class="box" x="45" y="125" width="230" height="58" rx="14"/><text x="160" y="161" text-anchor="middle" font-size="18" font-weight="800">Fundamental</text>
+        <rect class="box" x="295" y="125" width="230" height="58" rx="14"/><text x="410" y="161" text-anchor="middle" font-size="18" font-weight="800">Derived</text>
+        <rect class="box" x="545" y="125" width="230" height="58" rx="14"/><text x="660" y="161" text-anchor="middle" font-size="18" font-weight="800">User-defined</text>
+        <text x="160" y="220" text-anchor="middle" font-size="15">int · char · float</text><text x="160" y="247" text-anchor="middle" font-size="15">double · void</text>
+        <text x="410" y="220" text-anchor="middle" font-size="15">array · pointer</text><text x="410" y="247" text-anchor="middle" font-size="15">function</text>
+        <text x="660" y="220" text-anchor="middle" font-size="15">struct · union</text><text x="660" y="247" text-anchor="middle" font-size="15">enum · typedef</text>
+        <rect class="box" x="240" y="285" width="340" height="48" rx="12"/><text x="410" y="315" text-anchor="middle" font-size="14" font-weight="700">Classification helps you choose the right representation</text>
+      </svg>
+    </div>
+  </div>
+
+  <div class="visual-panel">
+    <p class="visual-title">3. Declaration → initialization → assignment</p>
+    <p class="visual-caption">Click a step to highlight what is happening in the code.</p>
+    <div class="diagram">
+      <svg viewBox="0 0 820 180" role="img" aria-label="Variable declaration initialization assignment flow">
+        <defs><marker id="arrow3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#64748b"/></marker></defs>
+        <g class="flow-step active" onclick="activateFlow(this)"><rect class="box-accent" x="20" y="48" width="230" height="84" rx="14"/><text x="135" y="77" text-anchor="middle" font-size="16" font-weight="800">Declaration</text><text x="135" y="108" text-anchor="middle" font-size="18" font-family="monospace">int score;</text></g>
+        <path class="arrow" marker-end="url(#arrow3)" d="M250 90 L290 90"/>
+        <g class="flow-step" onclick="activateFlow(this)"><rect class="box" x="295" y="48" width="230" height="84" rx="14"/><text x="410" y="77" text-anchor="middle" font-size="16" font-weight="800">Initialization</text><text x="410" y="108" text-anchor="middle" font-size="18" font-family="monospace">int score = 80;</text></g>
+        <path class="arrow" marker-end="url(#arrow3)" d="M525 90 L565 90"/>
+        <g class="flow-step" onclick="activateFlow(this)"><rect class="box" x="570" y="48" width="230" height="84" rx="14"/><text x="685" y="77" text-anchor="middle" font-size="16" font-weight="800">Assignment</text><text x="685" y="108" text-anchor="middle" font-size="18" font-family="monospace">score = 95;</text></g>
+      </svg>
+    </div>
+  </div>
+
+  <div class="visual-panel">
+    <p class="visual-title">4. Common type size comparison</p>
+    <p class="visual-caption">Illustrative layout only: actual sizes are implementation-dependent. Use <code>sizeof</code> on your system for the real size.</p>
+    <div class="type-bars">
+      <div class="type-bar"><div class="type-label">char</div><div class="type-track"><div class="type-fill" style="width:25%"></div></div><div class="type-note">sizeof(char) = 1</div></div>
+      <div class="type-bar"><div class="type-label">int</div><div class="type-track"><div class="type-fill" style="width:50%"></div></div><div class="type-note">implementation-dependent</div></div>
+      <div class="type-bar"><div class="type-label">float</div><div class="type-track"><div class="type-fill" style="width:50%"></div></div><div class="type-note">implementation-dependent</div></div>
+      <div class="type-bar"><div class="type-label">double</div><div class="type-track"><div class="type-fill" style="width:100%"></div></div><div class="type-note">implementation-dependent</div></div>
+    </div>
+  </div>
+
+  <div class="visual-panel">
+    <p class="visual-title">5. Memory-byte visualization</p>
+    <p class="visual-caption">Think of storage as a sequence of addressable bytes. The exact number of bytes used by a type depends on the implementation.</p>
+    <div class="memory-grid">
+      <div class="memory-cell">B0</div><div class="memory-cell">B1</div><div class="memory-cell">B2</div><div class="memory-cell">B3</div>
+      <div class="memory-cell">B4</div><div class="memory-cell">B5</div><div class="memory-cell">B6</div><div class="memory-cell">B7</div>
+    </div>
+    <div class="diagram-note"><code>sizeof(variable)</code> tells you how many bytes are used for that object's type on the current implementation.</div>
+  </div>
+
+  <div class="visual-panel">
+    <p class="visual-title">6. Type conversion flow</p>
+    <p class="visual-caption">Conversion can happen implicitly or be requested explicitly with a cast.</p>
+    <div class="diagram">
+      <svg viewBox="0 0 820 220" role="img" aria-label="Type conversion flow">
+        <defs><marker id="arrow4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#64748b"/></marker></defs>
+        <rect class="box" x="25" y="70" width="180" height="70" rx="14"/><text x="115" y="98" text-anchor="middle" font-size="16" font-weight="800">Source value</text><text x="115" y="122" text-anchor="middle" font-size="18" font-family="monospace">int x = 10</text>
+        <path class="arrow" marker-end="url(#arrow4)" d="M205 105 L310 105"/>
+        <rect class="box-accent" x="315" y="70" width="190" height="70" rx="14"/><text x="410" y="98" text-anchor="middle" font-size="16" font-weight="800">Conversion</text><text x="410" y="122" text-anchor="middle" font-size="17">implicit / explicit</text>
+        <path class="arrow" marker-end="url(#arrow4)" d="M505 105 L610 105"/>
+        <rect class="box" x="615" y="70" width="180" height="70" rx="14"/><text x="705" y="98" text-anchor="middle" font-size="16" font-weight="800">Target type</text><text x="705" y="122" text-anchor="middle" font-size="18" font-family="monospace">double</text>
+        <text x="410" y="180" text-anchor="middle" font-size="15" fill="#475569">Example: double y = (double)x;</text>
+      </svg>
+    </div>
+  </div>
+
+  <div class="visual-panel">
+    <p class="visual-title">7. Format specifier map</p>
+    <p class="visual-caption">Match the format specifier to the kind of value you are reading or printing.</p>
+    <table>
+      <tr><th>Type</th><th>Common printf specifier</th><th>Example</th></tr>
+      <tr><td><code>int</code></td><td><code>%d</code></td><td><code>printf("%d", age);</code></td></tr>
+      <tr><td><code>char</code></td><td><code>%c</code></td><td><code>printf("%c", grade);</code></td></tr>
+      <tr><td><code>float</code></td><td><code>%f</code></td><td><code>printf("%f", price);</code></td></tr>
+      <tr><td><code>double</code></td><td><code>%f</code></td><td><code>printf("%f", average);</code></td></tr>
+    </table>
+  </div>
+</section>
+
+<section id="practice"><div class="wrap">
+<div class="title"><h2>Practice</h2><p>Choose a suitable type and write the declaration.</p></div>
+<div class="quiz">
+<div class="card"><h3>Student age</h3><p><code>int age = 20;</code></p></div>
+<div class="card"><h3>Letter grade</h3><p><code>char grade = 'A';</code></p></div>
+<div class="card"><h3>Product price</h3><p><code>double price = 1499.99;</code></p></div>
+<div class="card"><h3>Item quantity</h3><p><code>int quantity = 12;</code></p></div>
+</div>
+<div class="note"><b>Mini challenge:</b> Create variables for a student's name, age, marks, grade, and attendance percentage. Select an appropriate type for each and initialize them.</div>
+</div></section>
+
+<footer class="footer"><b>Zensus</b> · C Variables & Data Types · Learn clearly. Code confidently.</footer>
+
+<script>
+function activateFlow(el){
+  document.querySelectorAll('.flow-step').forEach(x=>x.classList.remove('active'));
+  el.classList.add('active');
+}
+</script>
+
+
+<script>
+(function(){
+  const items=document.querySelectorAll('.visual-panel,.topic-card,.zensus-stats>div');
+  items.forEach(x=>x.style.opacity='0');
+  const io=new IntersectionObserver(entries=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){
+        e.target.style.transition='opacity .55s ease, transform .55s ease';
+        e.target.style.transform='translateY(0)';
+        e.target.style.opacity='1';
+        io.unobserve(e.target);
+      }
+    });
+  },{threshold:.08});
+  items.forEach(x=>{x.style.transform='translateY(14px)';io.observe(x)});
+})();
+</script>
+
+</body>
+</html>
